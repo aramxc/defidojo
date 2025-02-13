@@ -19,3 +19,4 @@ A platform to help users learn about and interact with the EVM.
 - Tailwind CSS
 - Thirdweb
 - Vercel
+
