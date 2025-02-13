@@ -40,6 +40,15 @@ __pycache__/
 /backend/.env
 /backend/*.log
 
+## Flask
+/backend/instance/
+/backend/.webassets-cache
+/backend/.flaskenv
+
+## Database Migrations
+/backend/migrations/
+/backend/migrate.py
+
 ## Distribution / packaging
 /backend/build/
 /backend/develop-eggs/
@@ -57,10 +66,6 @@ __pycache__/
 /backend/.installed.cfg
 /backend/*.egg
 /backend/.flake8
-
-## Flask specific
-/backend/instance/
-/backend/.webassets-cache
 
 ## VS Code
 .vscode/
