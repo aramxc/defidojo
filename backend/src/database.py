@@ -8,23 +8,21 @@ load_dotenv()
 
 def _init_tcp_connection_engine(db_config):
     if os.getenv('ENVIRONMENT') == 'production':
-        # Use Vercel's provided DATABASE_URL in production
-        database_url = os.getenv('POSTGRES_URL')
+        
+        database_url = os.getenv('DATABASE_URL')
         if database_url:
             return create_engine(database_url, **db_config)
     
-    # Use local credentials for development
+    # Local development
     db_user = os.getenv("DB_USER", "dojo_admin")
     db_name = os.getenv("DB_NAME", "defidojo")
-    # Use host.docker.internal to connect to host PostgreSQL from Docker
-    db_host = os.getenv("DB_HOST", "host.docker.internal")
+    db_host = os.getenv("DB_HOST", "localhost")
     db_port = int(os.getenv("DB_PORT", "5432"))
     db_pass = os.getenv("DB_PASSWORD")
 
-    # Create the connection URL
     pool = create_engine(
         sqlalchemy.engine.url.URL.create(
-            drivername="postgresql+psycopg2",  # Using PostgreSQL
+            drivername="postgresql+psycopg2",
             username=db_user,
             password=db_pass,
             host=db_host,
