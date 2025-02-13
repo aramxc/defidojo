@@ -3,9 +3,12 @@ import logging
 from config import Config
 from models import db
 from routes import register_routes
+from flask_migrate import Migrate
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+migrate = Migrate()
 
 
 def create_app():
@@ -15,6 +18,7 @@ def create_app():
         
         logger.info("Initializing database...")
         db.init_app(app)
+        migrate.init_app(app, db)
         
         logger.info("Registering routes...")
         register_routes(app)
