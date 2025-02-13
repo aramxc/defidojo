@@ -1,0 +1,11 @@
+{
+    "name": "defidojo-backend",
+    "version": "1.0.0",
+    "scripts": {
+      "db:start": "./scripts/manage_db.sh start",
+      "db:stop": "./scripts/manage_db.sh stop",
+      "db:status": "./scripts/manage_db.sh status",
+      "dev": "npm run db:start && python src/main.py",
+      "dev:clean": "npm run db:stop && npm run db:start && python src/main.py"
+    }
+  }

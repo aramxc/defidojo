@@ -16,7 +16,8 @@ def _init_tcp_connection_engine(db_config):
     # Use local credentials for development
     db_user = os.getenv("DB_USER", "dojo_admin")
     db_name = os.getenv("DB_NAME", "defidojo")
-    db_host = os.getenv("DB_HOST", "localhost")
+    # Use host.docker.internal to connect to host PostgreSQL from Docker
+    db_host = os.getenv("DB_HOST", "host.docker.internal")
     db_port = int(os.getenv("DB_PORT", "5432"))
     db_pass = os.getenv("DB_PASSWORD")
 
