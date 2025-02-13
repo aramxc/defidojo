@@ -1,0 +1,75 @@
+# Frontend
+## dependencies
+/frontend/node_modules
+/frontend/.pnp
+/frontend/.pnp.js
+
+## testing
+/frontend/coverage
+
+## next.js
+/frontend/.next/
+/frontend/out/
+
+## production
+/frontend/build
+
+## misc
+/frontend/.DS_Store
+/frontend/*.pem
+/frontend/.env*.local
+
+## debug
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+
+## typescript
+/frontend/*.tsbuildinfo
+/frontend/next-env.d.ts
+
+# Backend
+## Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+/backend/env/
+/backend/venv/
+/backend/.env
+/backend/*.log
+
+## Distribution / packaging
+/backend/build/
+/backend/develop-eggs/
+/backend/dist/
+/backend/downloads/
+/backend/eggs/
+/backend/.eggs/
+/backend/lib/
+/backend/lib64/
+/backend/parts/
+/backend/sdist/
+/backend/var/
+/backend/wheels/
+/backend/*.egg-info/
+/backend/.installed.cfg
+/backend/*.egg
+
+## Flask specific
+/backend/instance/
+/backend/.webassets-cache
+
+## VS Code
+.vscode/
+
+## PyCharm
+.idea/
+
+## System Files
+.DS_Store
+Thumbs.db
+
+## env
+.env
