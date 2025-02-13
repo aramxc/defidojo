@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy to Vercel
 on:
   push:
     branches: [main]
@@ -11,6 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # Deploy Frontend
       - name: Deploy Frontend to Vercel
         uses: amondnet/vercel-action@v20
         with:
@@ -19,6 +20,7 @@ jobs:
           vercel-project-id: ${{ secrets.PROJECT_ID_FRONTEND }}
           working-directory: ./frontend
           
+      # Deploy Backend
       - name: Deploy Backend to Vercel
         uses: amondnet/vercel-action@v20
         with:

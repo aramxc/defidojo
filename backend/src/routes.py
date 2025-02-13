@@ -3,6 +3,10 @@ from models import db, Challenge, Solution
 
 
 def register_routes(app):
+    @app.route('/health')
+    def health_check():
+        return jsonify({"status": "healthy"})
+    
     @app.route('/')
     def index():
         return jsonify({"message": "Hello, World!"})
@@ -31,7 +35,3 @@ def register_routes(app):
         db.session.commit()
         
         return jsonify({"message": "Solution submitted successfully"})
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
