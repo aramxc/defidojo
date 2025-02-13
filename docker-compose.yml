@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      target: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:5000
+    depends_on:
+      - backend
+    command: npm run dev
+
+  backend:
+    build:
+      context: ./backend
+      target: development
+    volumes:
+      - ./backend:/app
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_USER=dojo_admin
+      - DB_PASSWORD=Dj8#mK9$pL2@vN4x
+      - DB_NAME=defidojo
+      - DB_HOST=db
+      - DB_PORT=5432
+      - ENVIRONMENT=development
+    depends_on:
+      - db
+    command: python src/main.py
+
+  db:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=dojo_admin
+      - POSTGRES_PASSWORD=Dj8#mK9$pL2@vN4x
+      - POSTGRES_DB=defidojo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

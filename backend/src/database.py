@@ -7,12 +7,18 @@ load_dotenv()
 
 
 def _init_tcp_connection_engine(db_config):
-    # Get environment variables with development defaults
-    db_user = os.getenv("DB_USER", "postgres")
+    if os.getenv('ENVIRONMENT') == 'production':
+        # Use Vercel's provided DATABASE_URL in production
+        database_url = os.getenv('POSTGRES_URL')
+        if database_url:
+            return create_engine(database_url, **db_config)
+    
+    # Use local credentials for development
+    db_user = os.getenv("DB_USER", "dojo_admin")
     db_name = os.getenv("DB_NAME", "defidojo")
     db_host = os.getenv("DB_HOST", "localhost")
     db_port = int(os.getenv("DB_PORT", "5432"))
-    db_pass = os.getenv("DB_PASSWORD", "password")
+    db_pass = os.getenv("DB_PASSWORD")
 
     # Create the connection URL
     pool = create_engine(
