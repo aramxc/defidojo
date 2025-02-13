@@ -28,6 +28,7 @@ def create_app():
         logger.error(f"Error creating app: {str(e)}")
         raise
 
+
 app = create_app()
 
 if __name__ == '__main__':
