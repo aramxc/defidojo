@@ -17,7 +17,7 @@ jobs:
       
       # Frontend Deployment
       - name: Deploy Frontend
-        working-directory: frontend
+        working-directory: ./frontend
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}
         run: |
@@ -28,7 +28,7 @@ jobs:
 
       # Backend Deployment
       - name: Deploy Backend
-        working-directory: backend
+        working-directory: ./backend
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_BACKEND }}
         run: |
