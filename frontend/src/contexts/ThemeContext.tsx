@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { ThemeMode } from '@/types/theme';
+import { ThemeMode } from '@/types/themes';
 import { themes } from '@/config/themes';
 
 interface ThemeContextType {
@@ -10,12 +10,12 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: 'dark',
+  theme: 'forest',
   setTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<ThemeMode>('dark');
+  const [theme, setTheme] = useState<ThemeMode>('forest');
 
   useEffect(() => {
     // Apply theme CSS variables
