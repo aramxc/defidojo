@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
+
+
 export const metadata: Metadata = {
   title: "DeFi Dojo - Coding Challenges",
   description: "Learn DeFi development through interactive coding challenges",

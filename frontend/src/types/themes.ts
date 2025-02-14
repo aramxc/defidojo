@@ -1,15 +1,17 @@
-export type ThemeMode = 'light' | 'dark' | 'ocean' | 'cyberpunk' | string;
+export type ThemeMode = 'forest' | 'ocean' | 'sunset' | 'cyberpunk' | 'aurora' | string;
 
 export interface ThemeColors {
   background: {
     primary: string;
     secondary: string;
     accent: string;
+    image?: string;
   };
   text: {
     primary: string;
     secondary: string;
     accent: string;
+    dark: string;
   };
   border: {
     primary: string;

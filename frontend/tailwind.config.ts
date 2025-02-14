@@ -19,6 +19,7 @@ export default {
             primary: 'var(--text-primary)',
             secondary: 'var(--text-secondary)',
             accent: 'var(--text-accent)',
+            dark: 'var(--text-dark)',
           },
           border: {
             primary: 'var(--border-primary)',

@@ -11,6 +11,7 @@
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
     "@tailwindcss/postcss": "^4.0.6",
+    "framer-motion": "^12.4.3",
     "monaco-editor": "^0.52.2",
     "next": "15.1.7",
     "react": "^19.0.0",
