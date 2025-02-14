@@ -15,7 +15,6 @@ jobs:
       - name: Deploy Frontend to Vercel
         uses: amondnet/vercel-action@v20
         with:
-          zeit-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID_FRONTEND }}
@@ -25,7 +24,6 @@ jobs:
       - name: Deploy Backend to Vercel
         uses: amondnet/vercel-action@v20
         with:
-          zeit-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID_BACKEND }}
