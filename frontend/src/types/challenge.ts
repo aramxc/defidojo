@@ -11,11 +11,11 @@ export interface ChallengeTag {
     difficulty: 'Easy' | 'Medium' | 'Hard';
     tags: ChallengeTag[];
     description: string;
-    examples: {
-        input: string;
-        output: string;
-        explanation: string;
-    }[];
+    examples: Array<{
+      input: string;
+      output: string;
+      explanation?: string;
+    }>;
     constraints: string[];
     // authorId: string;
     // createdAt: Date;
