@@ -1,17 +1,20 @@
 'use client';
 
-import { Editor, loader } from '@monaco-editor/react';
-import { useState } from 'react';
+import { Editor } from '@monaco-editor/react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { solidityLanguageConfig } from '@/utils/monaco-solidity';
-
-// Register Solidity language
-loader.init().then(monaco => {
-  monaco.languages.register({ id: 'solidity' });
-  monaco.languages.setMonarchTokensProvider('solidity', solidityLanguageConfig);
-});
+import { initMonaco, editorOptions } from '@/utils/monaco';
 
 const LANGUAGE_SAMPLES = {
+  solidity: `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Challenge {
+    function hasEnoughTokens(address account, uint256 minBalance) public view returns (bool) {
+        // Your code here
+        
+    }
+}`,
   javascript: `function arraySum(numbers) {
   // Your code here
   
@@ -20,27 +23,18 @@ const LANGUAGE_SAMPLES = {
   // Your code here
   return 0;
 }`,
-  solidity: `// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-
-contract Challenge {
-    function arraySum(uint256[] memory numbers) public pure returns (uint256) {
-        // Your code here
-        
-    }
-}`
 };
 
 type SupportedLanguage = keyof typeof LANGUAGE_SAMPLES;
 
 export default function CodeEditor() {
   const { theme } = useTheme();
-  const [language, setLanguage] = useState<SupportedLanguage>('javascript');
+  const [language, setLanguage] = useState<SupportedLanguage>('solidity');
   const [code, setCode] = useState(LANGUAGE_SAMPLES[language]);
 
-  const handleEditorChange = (value: string | undefined) => {
-    if (value) setCode(value);
-  };
+  useEffect(() => {
+    initMonaco();
+  }, []);
 
   const handleLanguageChange = (newLang: SupportedLanguage) => {
     setLanguage(newLang);
@@ -102,24 +96,11 @@ export default function CodeEditor() {
       <div className="h-[400px] rounded-lg overflow-hidden">
         <Editor
           height="100%"
-          defaultLanguage={language}
           language={language}
           value={code}
-          onChange={handleEditorChange}
-          theme={theme === 'light' ? 'light' : 'vs-dark'}
-          options={{
-            minimap: { enabled: false },
-            fontSize: 14,
-            lineNumbers: 'on',
-            roundedSelection: true,
-            scrollBeyondLastLine: false,
-            automaticLayout: true,
-            padding: { top: 16, bottom: 16 },
-            tabSize: 2,
-            wordWrap: 'on',
-            formatOnPaste: true,
-            formatOnType: true,
-          }}
+          onChange={(value) => value && setCode(value)}
+          theme={theme === 'light' ? 'light' : 'vs-dark-solidity'}
+          options={editorOptions}
         />
       </div>
     </div>

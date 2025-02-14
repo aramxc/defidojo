@@ -1,8 +1,14 @@
 import { languages } from 'monaco-editor';
 
 export const solidityLanguageConfig: languages.IMonarchLanguage = {
-    defaultToken: 'invalid',
+    defaultToken: '',
     tokenPostfix: '.sol',
+  
+    brackets: [
+      { open: '{', close: '}', token: 'delimiter.curly' },
+      { open: '[', close: ']', token: 'delimiter.square' },
+      { open: '(', close: ')', token: 'delimiter.parenthesis' }
+    ],
   
     keywords: [
       'pragma',
@@ -52,10 +58,10 @@ export const solidityLanguageConfig: languages.IMonarchLanguage = {
       'byte',
       'int',
       'uint',
+      'uint256',
       'bool',
       'hash',
       'uint8',
-      'uint256',
       'int8',
       'int256',
       'bytes32',
@@ -86,9 +92,6 @@ export const solidityLanguageConfig: languages.IMonarchLanguage = {
       '|',
       '^',
       '%',
-      '<<',
-      '>>',
-      '>>>',
       '+=',
       '-=',
       '*=',
@@ -108,56 +111,60 @@ export const solidityLanguageConfig: languages.IMonarchLanguage = {
   
     tokenizer: {
       root: [
-        // Identifiers and keywords
-        [/[a-z_$][\w$]*/, {
+        // License identifier
+        [/\/\/ SPDX-License-Identifier:.*$/, 'comment.quote'],
+        
+        // Pragmas
+        [/(pragma)(\s+)(solidity)/, ['keyword', 'white', 'keyword']],
+        
+        // Comments
+        [/\/\/.*$/, 'comment'],
+        [/\/\*/, 'comment', '@comment'],
+
+        // Contract, interface, or library declaration
+        [/(contract|interface|library)(\s+)([A-Za-z_]\w*)/, ['keyword', 'white', 'type.identifier']],
+        
+        // Function declaration
+        [/(function)(\s+)([A-Za-z_]\w*)/, ['keyword', 'white', 'function']],
+
+        // Types
+        [/\b(address|bool|string|bytes\d*|int\d*|uint\d*)\b/, 'type'],
+
+        // Numbers
+        [/\b\d+\b/, 'number'],
+        [/\b0x[a-fA-F0-9]+\b/, 'number.hex'],
+
+        // Identifiers
+        [/[a-zA-Z_]\w*/, {
           cases: {
             '@typeKeywords': 'type',
             '@keywords': 'keyword',
             '@default': 'identifier'
           }
         }],
-  
+
         // Whitespace
-        { include: '@whitespace' },
-  
-        // Numbers
-        [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
-        [/0[xX][0-9a-fA-F]+/, 'number.hex'],
-        [/\d+/, 'number'],
-  
-        // Delimiters and operators
+        [/[ \t\r\n]+/, 'white'],
+
+        // Delimiters
+        [/[;,.]/, 'delimiter'],
         [/[{}()\[\]]/, '@brackets'],
-        [/[<>](?!@symbols)/, '@brackets'],
-        [/@symbols/, {
-          cases: {
-            '@operators': 'operator',
-            '@default': ''
-          }
-        }],
-  
+
         // Strings
         [/"([^"\\]|\\.)*$/, 'string.invalid'],
         [/"/, 'string', '@string'],
       ],
   
       comment: [
-        [/[^\/*]+/, 'comment'],
-        [/\/\*/, 'comment', '@push'],
-        ["\\*/", 'comment', '@pop'],
-        [/[\/*]/, 'comment']
+        [/[^/*]+/, 'comment'],
+        [/\*\//, 'comment', '@pop'],
+        [/[/*]/, 'comment']
       ],
   
       string: [
         [/[^\\"]+/, 'string'],
         [/@escapes/, 'string.escape'],
-        [/\\./, 'string.escape.invalid'],
-        [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
-      ],
-  
-      whitespace: [
-        [/[ \t\r\n]+/, ''],
-        [/\/\*/, 'comment', '@comment'],
-        [/\/\/.*$/, 'comment'],
+        [/"/, 'string', '@pop']
       ],
     },
   };

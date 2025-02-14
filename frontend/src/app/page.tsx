@@ -8,26 +8,32 @@ import ChallengeHeader from '@/components/challenge/ChallengeHeader';
 // This would come from your database
 const mockChallenge = {
   id: '1',
-  title: 'Array Sum Challenge',
+  title: 'Simple Token Balance Checker',
   difficulty: 'Easy' as const,
   tags: [
     {
       id: '1',
-      name: 'Arrays',
-      color: 'rgb(168, 85, 247)', // Purple
-      backgroundColor: 'rgba(168, 85, 247, 0.1)',
+      name: 'Solidity',
+      color: 'rgb(103, 76, 196)', // Purple
+      backgroundColor: 'rgba(103, 76, 196, 0.1)',
     },
     {
       id: '2',
-      name: 'Mathematics',
+      name: 'ERC20',
       color: 'rgb(59, 130, 246)', // Blue
       backgroundColor: 'rgba(59, 130, 246, 0.1)',
     },
+    {
+      id: '3',
+      name: 'View Functions',
+      color: 'rgb(16, 185, 129)', // Green
+      backgroundColor: 'rgba(16, 185, 129, 0.1)',
+    }
   ],
-  description: 'Write a function that takes an array of numbers and returns their sum.',
+  description: `Create a function that checks if an address has a token balance greater than a specified amount.`  
 };
-
-export default function Home() {
+  
+  export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-theme-bg-primary via-theme-bg-secondary to-theme-bg-primary">
       <main className="container mx-auto px-4 py-4 h-screen flex flex-col">
@@ -44,7 +50,7 @@ export default function Home() {
           {/* Left Panel - Description with scrolling */}
           <div className="bg-theme-panel-bg rounded-xl backdrop-blur-sm border border-theme-panel-border flex flex-col min-h-0">
             <div className="p-4 lg:p-6 overflow-y-auto custom-scrollbar">
-              <ChallengeDescription />
+              <ChallengeDescription challenge={mockChallenge} />
             </div>
           </div>
 
