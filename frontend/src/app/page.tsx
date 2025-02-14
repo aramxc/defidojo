@@ -30,7 +30,25 @@ const mockChallenge = {
       backgroundColor: 'rgba(16, 185, 129, 0.1)',
     }
   ],
-  description: `Create a function that checks if an address has a token balance greater than a specified amount.`  
+  description: `Create a function that checks if an address has a token balance greater than a specified amount.`,
+  examples: [
+    {
+      input: 'hasEnoughTokens(0x123...789, 50)',
+      output: 'true',
+      explanation: 'Address has 100 tokens, which is greater than minimum balance of 50'
+    },
+    {
+      input: 'hasEnoughTokens(0x456...abc, 150)',
+      output: 'false',
+      explanation: 'Address has 100 tokens, which is less than minimum balance of 150'
+    }
+  ],
+  constraints: [
+    'Account address must be a valid Ethereum address',
+    'minBalance must be greater than 0',
+    'Function must be marked as view',
+    'Use the provided _balances mapping to check balances'
+  ]
 };
   
   export default function Home() {
