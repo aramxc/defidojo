@@ -104,7 +104,7 @@ export const themes: Record<string, Theme> = {
         primary: '#E2E8F0',
         secondary: '#CBD5E1',
         accent: '#94A3B8',
-        dark: '#4A1259',
+        dark: '#FF2E63',
       },
       border: {
         primary: 'rgba(99, 102, 241, 0.4)',
@@ -131,10 +131,10 @@ export const themes: Record<string, Theme> = {
         image: '/assets/dojobgaurora.png',
       },
       text: {
-        primary: '#F8FAFC',
+        primary: '#E2F8F0',
         secondary: '#E2E8F0',
         accent: '#88E0D0',
-        dark: '#1B4D3C',
+        dark: '#4ADE80',
       },
       border: {
         primary: 'rgba(74, 222, 128, 0.4)',
