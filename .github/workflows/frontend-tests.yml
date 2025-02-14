@@ -4,7 +4,9 @@ on:
   pull_request:
     branches: [ main ]
     paths:
-      - 'frontend/**'
+      - 'frontend/**'  # Only run on frontend changes for PRs
+  push:
+    branches: [ main ]  # Always run on main pushes for verification
 
 jobs:
   test:
