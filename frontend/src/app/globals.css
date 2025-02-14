@@ -2,6 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--border-primary);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--button-secondary);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox scrollbar styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-primary) transparent;
+}
+
+/* Hide scrollbar track but show thumb */
+.hide-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--border-primary);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--button-secondary);
+}
+
+/* Optional: Add this class to any scrollable container for a cleaner look */
+.custom-scrollbar {
+  scrollbar-gutter: stable;
+  @apply hide-scrollbar;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
