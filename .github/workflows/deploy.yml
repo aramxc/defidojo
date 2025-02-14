@@ -21,12 +21,11 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}
         run: |
           cd $GITHUB_WORKSPACE/frontend
-          pwd
-          ls -la
+          npm install
           npm install --global vercel@latest
-          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }} --cwd .
-          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }} --cwd .
-          vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }} --cwd .
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }} --cwd $GITHUB_WORKSPACE/frontend
+          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }} --cwd $GITHUB_WORKSPACE/frontend
+          vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }} --cwd $GITHUB_WORKSPACE/frontend
 
       # Backend Deployment
       - name: Deploy Backend
