@@ -6,4 +6,5 @@ WORKDIR /app
 FROM base AS development
 COPY package*.json ./
 RUN npm install
+RUN npm install @monaco-editor/react
 COPY . .
