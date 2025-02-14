@@ -2,7 +2,7 @@ name: Frontend Tests
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ develop ]
     paths:
       - 'frontend/**'  # Only run on frontend changes for PRs
   push:
