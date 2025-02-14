@@ -24,9 +24,9 @@ jobs:
           pwd
           ls -la
           npm install --global vercel@latest
-          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-          vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }} --cwd .
+          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }} --cwd .
+          vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }} --cwd .
 
       # Backend Deployment
       - name: Deploy Backend
