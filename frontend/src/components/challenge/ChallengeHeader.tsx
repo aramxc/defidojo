@@ -23,7 +23,7 @@ export default function ChallengeHeader({ challenge }: ChallengeHeaderProps) {
 
   return (
     <div className="mb-4 lg:mb-6">
-      <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-theme-text-dark mb-2">
+      <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-theme-text-dark mb-2" data-testid="challenge-title">
         {challenge.title}
       </h1>
       <div className="flex flex-wrap items-center gap-2 md:gap-3">
