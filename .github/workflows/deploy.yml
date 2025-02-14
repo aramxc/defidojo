@@ -17,10 +17,10 @@ jobs:
       
       # Frontend Deployment
       - name: Deploy Frontend
+        working-directory: frontend
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}
         run: |
-          cd frontend
           npm install --global vercel@latest
           vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
           vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
@@ -28,10 +28,10 @@ jobs:
 
       # Backend Deployment
       - name: Deploy Backend
+        working-directory: backend
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_BACKEND }}
         run: |
-          cd backend
           vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
           vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
           vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
