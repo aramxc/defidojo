@@ -14,7 +14,11 @@ describe('Page Loading Tests', () => {
         </ChatProvider>
       </ThemeProvider>
     );
-    const element = await screen.findByText(/Enter the Dojo/i, {}, { timeout: 10000 }); // 10 seconds
+    const element = await screen.findByRole('button', { 
+      name: /Enter the Dojo/i 
+    }, { 
+      timeout: 5000 
+    });
     expect(element).toBeTruthy();
   });
 
@@ -26,7 +30,7 @@ describe('Page Loading Tests', () => {
         </ChatProvider>
       </ThemeProvider>
     );
-    const element = await screen.findByTestId('challenge-title', {}, { timeout: 10000 }); // 10 seconds
+    const element = await screen.findByTestId('challenge-title', {}, { timeout: 5000 });
     expect(element).toBeTruthy();
   });
 });
