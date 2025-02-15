@@ -3,18 +3,9 @@ import LandingPage from '@/app/page';
 import ChallengePage from '@/app/challenge/page';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ChatProvider } from '@/contexts/ChatContext';
-import { describe, test, expect, jest } from '@jest/globals';
+import { describe, test, expect } from '@jest/globals';
 
-// Mock ChatContext with minimal implementation
-jest.mock('@/contexts/ChatContext', () => ({
-  ChatProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  useChat: () => ({
-    isOpen: false,
-    toggleChat: () => {},
-    messages: [],
-    sendMessage: () => {},
-  })
-}));
+
 
 describe('Page Loading Tests', () => {
   test('Landing page loads', () => {
@@ -25,7 +16,8 @@ describe('Page Loading Tests', () => {
         </ChatProvider>
       </ThemeProvider>
     );
-    expect(document.title).toBe('DeFi Dojo - Coding Challenges');
+    const element = screen.getByText(/Enter the Dojo/i);
+    expect(element).toBeTruthy();
   });
 
   test('Challenge page loads', () => {
