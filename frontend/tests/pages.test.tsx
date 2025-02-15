@@ -16,6 +16,16 @@ jest.mock('@/contexts/ChatContext', () => ({
   })
 }));
 
+// Mock ThemeContext with controlled loading state
+jest.mock('@/contexts/ThemeContext', () => ({
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useTheme: () => ({
+    isLoading: false,
+    theme: 'light',
+    setTheme: () => {},
+  })
+}));
+
 describe('Page Loading Tests', () => {
   test('Landing page loads', async () => {
     render(
