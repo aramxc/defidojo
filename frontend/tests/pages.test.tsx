@@ -17,7 +17,7 @@ jest.mock('@/contexts/ChatContext', () => ({
 }));
 
 describe('Page Loading Tests', () => {
-  test('Landing page loads', () => {
+  test('Landing page loads', async () => {
     render(
       <ThemeProvider>
         <ChatProvider>
@@ -25,7 +25,7 @@ describe('Page Loading Tests', () => {
         </ChatProvider>
       </ThemeProvider>
     );
-    const enterButton = screen.getByTestId('enter-button');
+    const enterButton = await screen.getByTestId('enter-button');
     expect(enterButton).toBeTruthy();
   });
 
