@@ -3,17 +3,10 @@ import LandingPage from 'src/app/page';
 import ChallengePage from 'src/app/challenge/page';
 import { ThemeProvider } from 'src/contexts/ThemeContext';
 import { ChatProvider } from 'src/contexts/ChatContext';
-import { describe, test, expect, jest } from '@jest/globals';
-
-// Mock framer-motion
-jest.mock('framer-motion', () => ({
-  motion: {
-    button: ({ children, ...props }: { children: React.ReactNode } & { [key: string]: string }) => <button {...props}>{children}</button>
-  }
-}));
+import { describe, test, expect } from '@jest/globals';
 
 describe('Page Loading Tests', () => {
-  test('Landing page loads', async () => {
+  test('Landing page loads', () => {
     render(
       <ThemeProvider>
         <ChatProvider>
@@ -21,15 +14,11 @@ describe('Page Loading Tests', () => {
         </ChatProvider>
       </ThemeProvider>
     );
-    const element = await screen.findByRole('button', { 
-      name: /Enter the Dojo/i 
-    }, { 
-      timeout: 15000 
-    });
+    const element = screen.getByText(/Enter the Dojo/i);
     expect(element).toBeTruthy();
   });
 
-  test('Challenge page loads', async () => {
+  test('Challenge page loads', () => {
     render(
       <ThemeProvider>
         <ChatProvider>
@@ -37,7 +26,7 @@ describe('Page Loading Tests', () => {
         </ChatProvider>
       </ThemeProvider>
     );
-    const element = await screen.findByTestId('challenge-title', {}, { timeout: 5000 });
+    const element = screen.getByTestId('challenge-title');
     expect(element).toBeTruthy();
   });
 });
