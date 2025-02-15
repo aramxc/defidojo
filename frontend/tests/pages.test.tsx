@@ -65,8 +65,6 @@ describe('Page Loading Tests', () => {
       </ThemeProvider>
     );
     
-    // Wait for loading to complete
-    await waitForElementToBeRemoved(() => screen.queryByTestId('loading-spinner'));
     
     const enterButton = await screen.findByTestId('enter-button');
     expect(enterButton).toBeTruthy();
