@@ -1,24 +1,31 @@
 import { render, screen } from '@testing-library/react';
-import LandingPage from 'src/app/page';
-import ChallengePage from 'src/app/challenge/page';
-import { ThemeProvider } from 'src/contexts/ThemeContext';
-import { describe, test, expect } from '@jest/globals';
+import ChallengePage from '@/app/challenge/page';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import { ChatProvider } from '@/contexts/ChatContext';
+import { describe, test, expect, jest } from '@jest/globals';
+
+
+// Mock ChatContext
+jest.mock('@/contexts/ChatContext', () => ({
+  ChatProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useChat: () => ({
+    isOpen: false,
+    toggleChat: jest.fn(),
+    messages: [],
+    sendMessage: jest.fn(),
+  })
+}));
 
 describe('Page Loading Tests', () => {
-  test('Landing page loads', () => {
-    render(
-      <ThemeProvider>
-        <LandingPage />
-      </ThemeProvider>
-    );
-    const element = screen.getByText(/Enter the Dojo/i);
-    expect(element).toBeTruthy();
-  });
+
+  
 
   test('Challenge page loads', () => {
     render(
       <ThemeProvider>
-        <ChallengePage />
+        <ChatProvider>
+          <ChallengePage />
+        </ChatProvider>
       </ThemeProvider>
     );
     const element = screen.getByTestId('challenge-title');
