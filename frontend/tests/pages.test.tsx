@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react';
-import LandingPage from 'src/app/page';
-import ChallengePage from 'src/app/challenge/page';
-import { ThemeProvider } from 'src/contexts/ThemeContext';
-import { ChatProvider } from 'src/contexts/ChatContext';
+import LandingPage from '@/app/page';
+import ChallengePage from '@/app/challenge/page';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import { ChatProvider } from '@/contexts/ChatContext';
 import { describe, test, expect, jest } from '@jest/globals';
 
 // Mock ChatContext with minimal implementation
-jest.mock('src/contexts/ChatContext', () => ({
+jest.mock('@/contexts/ChatContext', () => ({
   ChatProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useChat: () => ({
     isOpen: false,
