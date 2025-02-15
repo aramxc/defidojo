@@ -69,7 +69,7 @@ export const useNebula = (): UseNebulaReturn => {
                     console.error('Stream error:', error);
                     contentRef.current = '';
                 },
-                Object.keys(context).length > 0 ? context : undefined // Only pass context if it has values
+                Object.keys(context).length > 0 ? context : undefined
             );
         } catch (error) {
             console.error('Error in sendMessage:', error);

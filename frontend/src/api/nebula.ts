@@ -5,6 +5,10 @@ export const nebulaApi = {
         onPresence: (data: string) => void,
         onComplete: () => void,
         onError: (error: Error) => void,
+        context?: {
+            chainIds?: string[] | null;
+            walletAddress?: string | null;
+        }
     ) => {
         try {
             const response = await fetch('https://nebula-api.thirdweb.com/chat', {
@@ -17,7 +21,8 @@ export const nebulaApi = {
                 body: JSON.stringify({ 
                     message,
                     user_id: 'default-user',
-                    stream: true
+                    stream: true,
+                    context
                 })
             });
 
