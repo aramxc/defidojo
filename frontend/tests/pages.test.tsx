@@ -2,26 +2,31 @@ import { render, screen } from '@testing-library/react';
 import LandingPage from 'src/app/page';
 import ChallengePage from 'src/app/challenge/page';
 import { ThemeProvider } from 'src/contexts/ThemeContext';
+import { ChatProvider } from 'src/contexts/ChatContext';
 import { describe, test, expect } from '@jest/globals';
 
 describe('Page Loading Tests', () => {
-  test('Landing page loads', () => {
+  test('Landing page loads', async () => {
     render(
       <ThemeProvider>
-        <LandingPage />
+        <ChatProvider>
+          <LandingPage />
+        </ChatProvider>
       </ThemeProvider>
     );
-    const element = screen.getByText(/Enter the Dojo/i);
+    const element = await screen.findByText(/Enter the Dojo/i, {}, { timeout: 5000 });
     expect(element).toBeTruthy();
   });
 
-  test('Challenge page loads', () => {
+  test('Challenge page loads', async () => {
     render(
       <ThemeProvider>
-        <ChallengePage />
+        <ChatProvider>
+          <ChallengePage />
+        </ChatProvider>
       </ThemeProvider>
     );
-    const element = screen.getByTestId('challenge-title');
+    const element = await screen.findByTestId('challenge-title', {}, { timeout: 5000 });
     expect(element).toBeTruthy();
   });
 });
