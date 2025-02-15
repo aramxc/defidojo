@@ -83,3 +83,8 @@ Thumbs.db
 ## cursor
 .cursorrules
 
+.vercel
+
+# Misc
+TREE.md
+postgres-data/

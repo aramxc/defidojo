@@ -8,5 +8,13 @@
     ],
     "env": {
       "NEXT_PUBLIC_API_URL": "https://defidojo-backend.vercel.app"
+    },
+    "git": {
+      "deploymentEnabled": {
+        "main": true,
+        "develop": false,
+        "feature/*": false,
+        "fix/*": false
+      }
     }
   }

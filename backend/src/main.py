@@ -1,12 +1,16 @@
 from flask import Flask
 import logging
-from config import Config
-from models import db
-from routes import register_routes
+from src.config import Config
+from src.database import verify_db_connection
+from src.models import db
+from flask_migrate import Migrate
+from src.routes import init_routes
 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+migrate = Migrate()
 
 
 def create_app():
@@ -17,12 +21,17 @@ def create_app():
         logger.info("Initializing database...")
         db.init_app(app)
         
+        logger.info("Initializing migrations...")
+        migrate.init_app(app, db)
+        
         logger.info("Registering routes...")
-        register_routes(app)
+        init_routes(app)
         
         with app.app_context():
-            logger.info("Creating database tables...")
-            db.create_all()
+            logger.info("Verifying database connection...")
+            if not verify_db_connection():
+                raise Exception("Database connection failed!")
+            logger.info("Database connection successful!")
         
         return app
     except Exception as e:
@@ -30,7 +39,6 @@ def create_app():
         raise
 
 
-app = create_app()
-
 if __name__ == '__main__':
+    app = create_app()
     app.run(host='0.0.0.0', port=8000, debug=True)
