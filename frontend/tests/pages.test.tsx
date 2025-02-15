@@ -3,30 +3,38 @@ import LandingPage from '@/app/page';
 import ChallengePage from '@/app/challenge/page';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ChatProvider } from '@/contexts/ChatContext';
-import { describe, test, expect, jest } from '@jest/globals';
+import { describe, test, expect, jest, beforeEach } from '@jest/globals';
 
-// Mock ChatContext with minimal implementation
+// Create a mock module for ThemeContext
+const mockThemeContext = {
+  isLoading: false,
+  theme: 'light',
+  setTheme: jest.fn(),
+};
+
+// Mock ThemeContext
+jest.mock('@/contexts/ThemeContext', () => ({
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useTheme: () => mockThemeContext
+}));
+
+// Mock ChatContext
 jest.mock('@/contexts/ChatContext', () => ({
   ChatProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useChat: () => ({
     isOpen: false,
-    toggleChat: () => {},
+    toggleChat: jest.fn(),
     messages: [],
-    sendMessage: () => {},
-  })
-}));
-
-// Mock ThemeContext with controlled loading state
-jest.mock('@/contexts/ThemeContext', () => ({
-  ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  useTheme: () => ({
-    isLoading: false,
-    theme: 'light',
-    setTheme: () => {},
+    sendMessage: jest.fn(),
   })
 }));
 
 describe('Page Loading Tests', () => {
+  beforeEach(() => {
+    // Reset mock state before each test
+    mockThemeContext.isLoading = false;
+  });
+
   test('Landing page loads', async () => {
     render(
       <ThemeProvider>
@@ -35,8 +43,9 @@ describe('Page Loading Tests', () => {
         </ChatProvider>
       </ThemeProvider>
     );
-    const enterButton = await screen.getByTestId('enter-button');
-    expect(enterButton).toBeTruthy();
+    
+    const enterButton = await screen.findByTestId('enter-button');
+    expect(enterButton).toBeInTheDocument();
   });
 
   test('Challenge page loads', () => {
