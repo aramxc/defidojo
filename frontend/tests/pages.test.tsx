@@ -3,7 +3,18 @@ import LandingPage from 'src/app/page';
 import ChallengePage from 'src/app/challenge/page';
 import { ThemeProvider } from 'src/contexts/ThemeContext';
 import { ChatProvider } from 'src/contexts/ChatContext';
-import { describe, test, expect } from '@jest/globals';
+import { describe, test, expect, jest } from '@jest/globals';
+
+// Mock ChatContext with minimal implementation
+jest.mock('src/contexts/ChatContext', () => ({
+  ChatProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useChat: () => ({
+    isOpen: false,
+    toggleChat: () => {},
+    messages: [],
+    sendMessage: () => {},
+  })
+}));
 
 describe('Page Loading Tests', () => {
   test('Landing page loads', () => {
