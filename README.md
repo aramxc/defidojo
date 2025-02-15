@@ -1,6 +1,6 @@
 # defidojo
 
-A platform to help users learn about and interact with the EVM.
+A platform to help users learn about and interact with the EVM, solve coding exercises, and earn rewards.
 
 ## Features
 
