@@ -14,8 +14,7 @@ describe('Page Loading Tests', () => {
         </ChatProvider>
       </ThemeProvider>
     );
-    const element = screen.getByText(/Enter the Dojo/i);
-    expect(element).toBeTruthy();
+    expect(document.title).toBe('DeFi Dojo - Coding Challenges');
   });
 
   test('Challenge page loads', () => {
