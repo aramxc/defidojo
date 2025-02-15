@@ -3,7 +3,14 @@ import LandingPage from 'src/app/page';
 import ChallengePage from 'src/app/challenge/page';
 import { ThemeProvider } from 'src/contexts/ThemeContext';
 import { ChatProvider } from 'src/contexts/ChatContext';
-import { describe, test, expect } from '@jest/globals';
+import { describe, test, expect, jest } from '@jest/globals';
+
+// Mock framer-motion
+jest.mock('framer-motion', () => ({
+  motion: {
+    button: ({ children, ...props }: { children: React.ReactNode } & { [key: string]: string }) => <button {...props}>{children}</button>
+  }
+}));
 
 describe('Page Loading Tests', () => {
   test('Landing page loads', async () => {
@@ -17,7 +24,7 @@ describe('Page Loading Tests', () => {
     const element = await screen.findByRole('button', { 
       name: /Enter the Dojo/i 
     }, { 
-      timeout: 15000
+      timeout: 15000 
     });
     expect(element).toBeTruthy();
   });
