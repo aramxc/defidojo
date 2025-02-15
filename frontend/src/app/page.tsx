@@ -3,8 +3,16 @@
 import { BackgroundImage } from '@/components/background/BackgroundImage';
 import { EnterButton } from '@/components/buttons/EnterButton';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '@/contexts/ThemeContext';
+import Loading from './loading';
 
 export default function LandingPage() {
+  const { isLoading } = useTheme();
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <AnimatePresence>
       <motion.div 
