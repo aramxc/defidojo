@@ -25,7 +25,7 @@ export function EnterButton() {
   };
 
   return (
-    <div className="w-full flex justify-center">
+    <div className="absolute left-1/2 top-[80%] -translate-x-1/2 -translate-y-1/2">
       <motion.button
         initial={{ y: 20, opacity: 0 }}
         animate={{ 

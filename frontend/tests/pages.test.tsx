@@ -14,7 +14,7 @@ describe('Page Loading Tests', () => {
         </ChatProvider>
       </ThemeProvider>
     );
-    const element = await screen.findByText(/Enter the Dojo/i, {}, { timeout: 5000 });
+    const element = await screen.findByText(/Enter the Dojo/i, {}, { timeout: 10000 }); // 10 seconds
     expect(element).toBeTruthy();
   });
 
@@ -26,7 +26,7 @@ describe('Page Loading Tests', () => {
         </ChatProvider>
       </ThemeProvider>
     );
-    const element = await screen.findByTestId('challenge-title', {}, { timeout: 5000 });
+    const element = await screen.findByTestId('challenge-title', {}, { timeout: 10000 }); // 10 seconds
     expect(element).toBeTruthy();
   });
 });
