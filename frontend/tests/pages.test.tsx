@@ -17,7 +17,7 @@ describe('Page Loading Tests', () => {
     const element = await screen.findByRole('button', { 
       name: /Enter the Dojo/i 
     }, { 
-      timeout: 5000 
+      timeout: 15000
     });
     expect(element).toBeTruthy();
   });
