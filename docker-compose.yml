@@ -6,10 +6,17 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+      - next-cache:/app/.next
     ports:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://backend:8000}
+      - WATCHPACK_POLLING=true
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
     depends_on:
       - backend
     command: npm run dev
@@ -89,5 +96,27 @@ services:
     command: >
       sh -c "flask db upgrade"
 
+  seed:
+    build:
+      context: ./backend
+      target: development
+    volumes:
+      - ./backend:/app
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - DB_USER=${DB_USER:-dojo_admin}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME:-defidojo}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - PYTHONPATH=/app
+    depends_on:
+      migration:
+        condition: service_completed_successfully
+    command: python src/seed.py development
+
 volumes:
-  postgres_data:    driver: local  # Simplified volume configuration
+  postgres_data:
+    driver: local  # Simplified volume configuration
+  next-cache:
+    driver: local

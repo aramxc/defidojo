@@ -5,8 +5,17 @@ from src.config import get_database_url
 import os
 
 
+def is_database_empty():
+    """Check if the database is empty by looking for any existing users or challenges"""
+    return (
+        User.query.first() is None and 
+        Challenge.query.first() is None and
+        Tag.query.first() is None
+    )
+
+
 def seed_database(environment='local'):
-    """Seed the database with initial data.
+    """Seed the database with initial data only if it's empty.
     
     Args:
         environment (str): Either 'local' or 'development'
@@ -17,11 +26,18 @@ def seed_database(environment='local'):
     app = create_app()
     
     with app.app_context():
-        print(f"Seeding {environment} database...")
+        print(f"Checking {environment} database...")
         try:
-            # Test database connection with proper text() wrapper
+            # Test database connection
             db.session.execute(text('SELECT 1'))
             print("Database connection successful!")
+            
+            # Check if database is empty
+            if not is_database_empty():
+                print("Database already contains data, skipping seed.")
+                return
+            
+            print("Database is empty, starting seed process...")
             
             # Create test user
             user = User(
@@ -80,7 +96,7 @@ def seed_database(environment='local'):
                 ],
                 author_id=user.id,
                 author_name=user.username,
-                tags=tags  # Link all tags to this challenge
+                tags=tags
             )
             db.session.add(challenge)
             db.session.commit()
@@ -88,7 +104,7 @@ def seed_database(environment='local'):
             print("Database seeded successfully!")
             
         except Exception as e:
-            print(f"Database connection failed: {str(e)}")
+            print(f"Database error: {str(e)}")
             raise
 
 
@@ -97,7 +113,7 @@ if __name__ == "__main__":
     env = sys.argv[1] if len(sys.argv) > 1 else 'local'
     try:
         seed_database(env)
-        print(f"Successfully seeded {env} database!")
+        print(f"Seed process completed for {env} database!")
     except Exception as e:
         print(f"Error seeding database: {str(e)}")
         sys.exit(1)

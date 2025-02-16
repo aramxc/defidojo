@@ -10,10 +10,10 @@ __all__ = ['db']
 # After db is used everywhere, extend __all__
 
 from .user import User  # noqa: E402
-from .challenge.challenge import Challenge  # noqa: E402
+from .challenge.challenge import Challenge, challenge_tags  # noqa: E402
 from .challenge.solution import Solution    # noqa: E402
 from .challenge.tag import Tag             # noqa: E402
 from .challenge.test_case import TestCase  # noqa: E402
 
 # Update __all__ with model exports
-__all__ += ['User', 'Challenge', 'Solution', 'Tag', 'TestCase']
+__all__ += ['User', 'Challenge', 'Solution', 'Tag', 'TestCase', 'challenge_tags']

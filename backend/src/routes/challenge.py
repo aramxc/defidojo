@@ -129,3 +129,13 @@ async def vote_challenge(challenge_id: str):
         return jsonify(ChallengeResponse.from_orm(challenge).dict())
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
+
+
+@challenge_routes.route('/tags', methods=['GET'])
+async def get_tags():
+    """Get all available tags"""
+    try:
+        tags = await ChallengeService.get_tags()
+        return jsonify([tag.to_dict() for tag in tags])
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400

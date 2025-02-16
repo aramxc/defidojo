@@ -1,8 +1,8 @@
-from typing import Optional, Dict, Any
-from ..models import db, Challenge, Solution, Tag
+from typing import Optional
+from ..models import db, Challenge, Solution, Tag, challenge_tags
 from ..schemas.challenge import ChallengeCreate, ChallengeUpdate, SolutionCreate
 from sqlalchemy.exc import IntegrityError
-
+from sqlalchemy import select, func
 
 
 class ChallengeService:
@@ -52,35 +52,33 @@ class ChallengeService:
         return Challenge.query.get_or_404(challenge_id)
 
     @staticmethod
-    async def get_challenges(
-        difficulty: Optional[str] = None,
-        tag: Optional[str] = None,
-        author_id: Optional[str] = None,
-        page: int = 1,
-        per_page: int = 20
-    ) -> Dict[str, Any]:
-        """Get challenges with filters and pagination"""
-        query = Challenge.query
+    async def get_tags():
+        """Get all tags"""
+        return Tag.query.all()
 
-        if difficulty:
-            query = query.filter_by(difficulty=difficulty)
+    @staticmethod
+    async def get_challenges(tag: Optional[str] = None, **kwargs):
+        """Get challenges with optional tag filter"""
+        query = select(Challenge)
+        
         if tag:
-            query = query.join(Challenge.tags).filter(Tag.name == tag)
-        if author_id:
-            query = query.filter_by(author_id=author_id)
-
-        total = query.count()
-        challenges = query.order_by(Challenge.created_at.desc()) \
-                        .offset((page - 1) * per_page) \
-                        .limit(per_page) \
-                        .all()
-
+            # Efficient join query using the junction table
+            query = (
+                query.join(challenge_tags)
+                .join(Tag)
+                .filter(Tag.name.ilike(f'%{tag}%'))
+            )
+            
+        # Add count query for pagination
+        count_query = select(func.count()).select_from(query.subquery())
+        
+        # Execute queries
+        challenges = await db.session.execute(query)
+        total = await db.session.execute(count_query)
+        
         return {
-            "challenges": challenges,
-            "total": total,
-            "page": page,
-            "per_page": per_page,
-            "pages": (total + per_page - 1) // per_page
+            'challenges': challenges.scalars().all(),
+            'total': total.scalar(),
         }
 
     @staticmethod

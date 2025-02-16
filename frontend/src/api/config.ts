@@ -6,29 +6,28 @@ export class ApiError extends Error {
   }
 }
 
-export const fetchApi = async (endpoint: string) => {
-  // For Vercel deployment
-  const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
-  
-  // Use production URL on Vercel, Docker URL locally
-  const baseUrl = isProduction 
-    ? process.env.NEXT_PUBLIC_PRODUCTION_API_URL  // Your deployed backend URL
-    : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-  
-  try {
-    const response = await fetch(`${baseUrl}${endpoint}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error(`API request failed for ${endpoint}:`, error);
-    throw error;
+const getBaseUrl = () => {
+  // In development, use localhost since we're accessing from browser
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:8000';
   }
+  // In production, use the environment variable
+  return process.env.NEXT_PUBLIC_API_URL;
+};
+
+export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
+  const baseUrl = getBaseUrl();
+  const response = await fetch(`${baseUrl}/api${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.statusText}`);
+  }
+
+  return response.json();
 };

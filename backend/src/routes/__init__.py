@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify
 from .challenge import challenge_routes
 from .user import user_routes
 
-# Create a main api Blueprint
+# Create a main api Blueprint with url prefix /api
 api = Blueprint('api', __name__, url_prefix='/api')
 
 
@@ -19,8 +19,9 @@ def index():
 
 def init_routes(app):
     """Initialize all routes with the app"""
-    # Register the feature Blueprints with the main api Blueprint
+    # /challenges, /challenges/<challenge_id>
     api.register_blueprint(challenge_routes)
+    # /users, /users/<user_id>
     api.register_blueprint(user_routes)
     
     # Register the main api Blueprint with the app
