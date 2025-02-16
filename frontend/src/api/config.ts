@@ -6,21 +6,29 @@ export class ApiError extends Error {
   }
 }
 
-export async function fetchApi<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+export const fetchApi = async (endpoint: string) => {
+  // For Vercel deployment
+  const isProduction = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
+  
+  // Use production URL on Vercel, Docker URL locally
+  const baseUrl = isProduction 
+    ? process.env.NEXT_PUBLIC_PRODUCTION_API_URL  // Your deployed backend URL
+    : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  
+  try {
+    const response = await fetch(`${baseUrl}${endpoint}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-  if (!response.ok) {
-    throw new ApiError(response.status, await response.text());
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error(`API request failed for ${endpoint}:`, error);
+    throw error;
   }
-
-  return response.json();
-}
+};

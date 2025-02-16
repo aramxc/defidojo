@@ -78,7 +78,7 @@ services:
     environment:
       - ENVIRONMENT=${ENVIRONMENT:-development}
       - DB_USER=${DB_USER:-dojo_admin}
-      - DB_PASSWORD=Dj8#mK9$pL2@vN4x
+      - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME:-defidojo}
       - DB_HOST=postgres
       - DB_PORT=5432
@@ -90,5 +90,4 @@ services:
       sh -c "flask db upgrade"
 
 volumes:
-  postgres_data:
-    driver: local  # Simplified volume configuration
+  postgres_data:    driver: local  # Simplified volume configuration

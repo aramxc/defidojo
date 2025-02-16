@@ -1,7 +1,5 @@
 from flask import Flask
 import logging
-from src.config import Config
-from src.database import verify_db_connection
 from src.models import db
 from flask_migrate import Migrate
 from src.routes import init_routes
@@ -14,29 +12,20 @@ migrate = Migrate()
 
 
 def create_app():
-    try:
-        app = Flask(__name__)
-        app.config.from_object(Config)
-        
-        logger.info("Initializing database...")
-        db.init_app(app)
-        
-        logger.info("Initializing migrations...")
-        migrate.init_app(app, db)
-        
-        logger.info("Registering routes...")
-        init_routes(app)
-        
-        with app.app_context():
-            logger.info("Verifying database connection...")
-            if not verify_db_connection():
-                raise Exception("Database connection failed!")
-            logger.info("Database connection successful!")
-        
-        return app
-    except Exception as e:
-        logger.error(f"Error creating app: {str(e)}")
-        raise
+    """Create and configure the Flask application"""
+    app = Flask(__name__)
+    
+    # Default configuration
+    app.config.from_object('src.config.Config')
+    
+    # Initialize extensions
+    db.init_app(app)
+    migrate.init_app(app, db)
+    
+    # Register routes
+    init_routes(app)
+    
+    return app
 
 
 if __name__ == '__main__':

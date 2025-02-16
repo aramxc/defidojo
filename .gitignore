@@ -66,6 +66,7 @@ __pycache__/
 /backend/.installed.cfg
 /backend/*.egg
 /backend/.flake8
+/backend/src/seed.py
 
 ## VS Code
 .vscode/

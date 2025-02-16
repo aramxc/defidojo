@@ -1,43 +1,37 @@
-import { Challenge } from '@/types/challenge';
+import { Challenge, Solution } from '@/types/challenge';
 import { fetchApi } from './config';
 
-export const challengesApi = {
-  getChallenge(id: string) {
-    return fetchApi<Challenge>(`/challenges/${id}`);
+
+export const challengeApi = {
+  getChallenge: async (id: string): Promise<Challenge> => {
+    const response = await fetchApi(`/challenge/${id}`) as { data: Challenge };
+    return response.data;
   },
 
-  getChallenges(params?: {
-    difficulty?: 'Easy' | 'Medium' | 'Hard';
-    tags?: string[];
-    page?: number;
-    limit?: number;
-  }) {
-    const searchParams = new URLSearchParams();
-    if (params?.difficulty) searchParams.set('difficulty', params.difficulty);
-    if (params?.tags) searchParams.set('tags', params.tags.join(','));
-    if (params?.page) searchParams.set('page', params.page.toString());
-    if (params?.limit) searchParams.set('limit', params.limit.toString());
+  // getChallenges: async (params?: {
+  //   difficulty?: string;
+  //   tag?: string;
+  //   page?: number;
+  //   per_page?: number;
+  // }): Promise<{
+  //   challenges: Challenge[];
+  //   total: number;
+  //   page: number;
+  //   per_page: number;
+  //   pages: number;
+  // }> => {
+  //   const response = await fetchApi('/challenge', { params });
+  //   return response.data;
+  // },
 
-    return fetchApi<{
-      challenges: Challenge[];
-      total: number;
-      page: number;
-    }>(`/challenges?${searchParams.toString()}`);
-  },
-
-  submitSolution(challengeId: string, solution: {
+  submitSolution: async (challengeId: string, solution: {
     code: string;
     language: string;
-  }) {
-    return fetchApi<{
-      success: boolean;
-      results: Array<{
-        passed: boolean;
-        message: string;
-      }>;
-    }>(`/challenges/${challengeId}/submit`, {
+  }) => {
+    const response = await fetchApi(`/challenge/${challengeId}/solutions`, {
       method: 'POST',
       body: JSON.stringify(solution),
-    });
+    }) as { data: Solution };
+    return response.data;
   },
 };

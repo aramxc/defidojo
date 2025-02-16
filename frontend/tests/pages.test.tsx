@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import ChallengePage from '@/app/challenge/page';
+import ChallengePage from '@/app/challenge/[id]/page';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ChatProvider } from '@/contexts/ChatContext';
 import { describe, test, expect, jest } from '@jest/globals';
@@ -24,7 +24,7 @@ describe('Page Loading Tests', () => {
     render(
       <ThemeProvider>
         <ChatProvider>
-          <ChallengePage />
+          <ChallengePage params={{ id: '1' }} />
         </ChatProvider>
       </ThemeProvider>
     );
