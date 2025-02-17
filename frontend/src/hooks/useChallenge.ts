@@ -1,43 +1,62 @@
-import { useState, useEffect } from 'react';
-import { Challenge} from '@/types/challenge';
-import { challengeApi } from '@/api/challenges';
+import { useState, useCallback } from 'react';
+import { Challenge } from '@/types/challenge';
+import { fetchApi } from '@/api/config';
 
-export function useChallenge(id: string) {
-  const [challenge, setChallenge] = useState<Challenge | null>(null);
-  const [loading, setLoading] = useState(true);
+interface ChallengeListResponse {
+  challenges: Challenge[];
+  total: number;
+  page: number;
+  per_page: number;
+  pages: number;
+}
+
+export function useChallenge() {
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchChallenge() {
-      try {
-        setLoading(true);
-        const data = await challengeApi.getChallenge(id);
-        setChallenge(data);
-      } catch (err) {
-        setError('Failed to load challenge');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+  const getChallenges = useCallback(async (params?: {
+    difficulty?: string;
+    tag?: string;
+    page?: number;
+    per_page?: number;
+  }): Promise<ChallengeListResponse> => {
+    setLoading(true);
+    setError(null);
+    
+    // Build query string
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== '') {
+          queryParams.append(key, value.toString());
+        }
+      });
     }
-
-    fetchChallenge();
-  }, [id]);
-
-  const submitSolution = async (code: string, language: string) => {
+    
+    const endpoint = `challenges${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    
+    // // Debug logging
+    // console.log('Fetching challenges:', {
+    //   endpoint,
+    //   params,
+    //   queryString: queryParams.toString()
+    // });
+    
     try {
-      const solution = await challengeApi.submitSolution(id, { code, language });
-      return solution;
+      const response = await fetchApi(endpoint);
+      return response;
     } catch (err) {
-      console.error(err);
-      throw new Error('Failed to submit solution');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch challenges';
+      setError(errorMessage);
+      throw err; 
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
   return {
-    challenge,
     loading,
     error,
-    submitSolution
+    getChallenges,
   };
 }

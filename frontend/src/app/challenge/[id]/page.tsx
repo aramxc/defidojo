@@ -1,91 +1,84 @@
 'use client';
 
-// import { motion } from 'framer-motion';
-import { BackgroundImage } from '@/components/background/BackgroundImage';
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { Challenge } from '@/types/challenge';
+import { challengeApi } from '@/api/challenges';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import CodeEditor from '@/components/editor/CodeEditor';
 import ChallengeDescription from '@/components/challenge/ChallengeDescription';
 import TestResults from '@/components/challenge/TestResults';
 import ActionBar from '@/components/ActionBar';
-import ThemeSelector from '@/components/theme/ThemeSelector';
 import ChallengeHeader from '@/components/challenge/ChallengeHeader';
-import { useChallenge } from '@/hooks/useChallenge';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import PageLayout from '@/components/layout/PageLayout';
+import Link from 'next/link';
 
+export default function ChallengePage() {
+  const params = useParams();
+  const [challenge, setChallenge] = useState<Challenge | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchChallenge = async () => {
+      try {
+        setLoading(true);
+        const data = await challengeApi.getChallenge(params.id as string);
+        setChallenge(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load challenge');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-// const mockChallenge = {
-//   id: '1',
-//   title: 'Simple Token Balance Checker',
-//   difficulty: 'Easy' as const,
-//   tags: [
-//     {
-//       id: '1',
-//       name: 'Solidity',
-//       color: 'rgb(103, 76, 196)', // Purple
-//       backgroundColor: 'rgba(103, 76, 196, 0.1)',
-//     },
-//     {
-//       id: '2',
-//       name: 'ERC20',
-//       color: 'rgb(59, 130, 246)', // Blue
-//       backgroundColor: 'rgba(59, 130, 246, 0.1)',
-//     },
-//     {
-//       id: '3',
-//       name: 'View Functions',
-//       color: 'rgb(16, 185, 129)', // Green
-//       backgroundColor: 'rgba(16, 185, 129, 0.1)',
-//     }
-//   ],
-//   description: `Create a function that checks if an address has a token balance greater than a specified amount.`,
-//   examples: [
-//     {
-//       input: 'hasEnoughTokens(0x123...789, 50)',
-//       output: 'true',
-//       explanation: 'Address has 100 tokens, which is greater than minimum balance of 50'
-//     },
-//     {
-//       input: 'hasEnoughTokens(0x456...abc, 150)',
-//       output: 'false',
-//       explanation: 'Address has 100 tokens, which is less than minimum balance of 150'
-//     }
-//   ],
-//   constraints: [
-//     'Account address must be a valid Ethereum address',
-//     'minBalance must be greater than 0',
-//     'Function must be marked as view',
-//     'Use the provided _balances mapping to check balances'
-//   ]
-// };
-  
-export default function ChallengePage({ params }: { params: { id: string } }) {
- 
-  
-  const { challenge, loading, error } = useChallenge(params.id);
+    if (params.id) {
+      fetchChallenge();
+    }
+  }, [params.id]);
 
-  if (loading) return <LoadingSpinner />;
-  if (error) return <div>{error}</div>;
-  if (!challenge) return <div>Challenge not found</div>;
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-red-500">Error: {error}</div>
+      </div>
+    );
+  }
+
+  if (!challenge) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-theme-text">Challenge not found</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background with controlled overflow */}
-      <div className="fixed inset-0 w-full h-full">
-        <BackgroundImage overlay={false} />
-      </div>
-
-      {/* Theme Selector - Adjusted positioning for mobile */}
-      <div className="absolute right-4 top-4 md:right-8 md:top-4 z-50">
-        <ThemeSelector />
-      </div>
-
-      {/* Main Content Container */}
-      <main className="relative min-h-screen container mx-auto px-4 py-4 flex flex-col">
-        {/* Challenge Header */}
-        <ChallengeHeader challenge={challenge} />
+    <PageLayout>
+      <div className="relative container mx-auto px-4 py-4 h-screen flex flex-col">
+        <div className="flex items-center mb-4">
+          <Link
+            href="/challengeSelection"
+            className="inline-flex items-center text-theme-text-dark hover:text-theme-text-accent transition-colors duration-200"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Choose Different Challenge
+          </Link>
+          
+          {/* Center the Challenge Header */}
+          <div className="flex-1 flex justify-center">
+            <ChallengeHeader challenge={challenge} />
+          </div>
+        </div>
 
         {/* Main Challenge Area - Responsive Grid */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 min-h-0 mt-4">
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 min-h-0">
           {/* Left Panel - Description */}
           <div className="bg-theme-panel-bg rounded-xl backdrop-blur-sm border border-theme-panel-border 
                         flex flex-col min-h-[300px] lg:min-h-0 order-2 lg:order-1">
@@ -117,7 +110,7 @@ export default function ChallengePage({ params }: { params: { id: string } }) {
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </PageLayout>
   );
 }

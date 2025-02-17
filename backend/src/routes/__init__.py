@@ -19,9 +19,10 @@ def index():
 
 def init_routes(app):
     """Initialize all routes with the app"""
-    # /challenges, /challenges/<challenge_id>
+    challenge_routes.url_prefix = '/challenges'  
     api.register_blueprint(challenge_routes)
-    # /users, /users/<user_id>
+  
+    user_routes.url_prefix = '/users' 
     api.register_blueprint(user_routes)
     
     # Register the main api Blueprint with the app

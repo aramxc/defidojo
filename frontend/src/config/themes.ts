@@ -21,8 +21,8 @@ export const themes: Record<string, Theme> = {
         secondary: 'rgba(75, 85, 99, 0.3)',
       },
       panel: {
-        background: 'rgba(31, 41, 55, 0.8)',
-        border: 'rgba(75, 85, 99, 0.8)',
+        background: 'rgba(31, 41, 55, 0.85)',
+        border: 'rgba(75, 85, 99, 0.85)',
       },
       button: {
         primary: '#10B981',
@@ -51,8 +51,8 @@ export const themes: Record<string, Theme> = {
         secondary: 'rgba(56, 189, 248, 0.2)',
       },
       panel: {
-        background: 'rgba(15, 23, 42, 0.8)',
-        border: 'rgba(56, 189, 248, 0.8)',
+        background: 'rgba(15, 23, 42, 0.85)',
+        border: 'rgba(56, 189, 248, 0.85)',
       },
       button: {
         primary: '#0EA5E9',
@@ -81,8 +81,8 @@ export const themes: Record<string, Theme> = {
         secondary: 'rgba(223, 140, 107, 0.2)',
       },
       panel: {
-        background: 'rgba(31, 26, 23, 0.8)',
-        border: 'rgba(223, 140, 107, 0.8)',
+        background: 'rgba(31, 26, 23, 0.85)',
+        border: 'rgba(223, 140, 107, 0.85)',
       },
       button: {
         primary: '#E67E22',
@@ -111,8 +111,8 @@ export const themes: Record<string, Theme> = {
         secondary: 'rgba(99, 102, 241, 0.2)',
       },
       panel: {
-        background: 'rgba(17, 24, 39, 0.8)',
-        border: 'rgba(139, 92, 246, 0.8)',
+        background: 'rgba(17, 24, 39, 0.85)',
+        border: 'rgba(139, 92, 246, 0.85)',
       },
       button: {
         primary: '#FF2E63',
@@ -141,8 +141,8 @@ export const themes: Record<string, Theme> = {
         secondary: 'rgba(74, 222, 128, 0.2)',
       },
       panel: {
-        background: 'rgba(15, 23, 42, 0.8)',
-        border: 'rgba(139, 92, 246, 0.8)',
+        background: 'rgba(15, 23, 42, 0.85)',
+        border: 'rgba(139, 92, 246, 0.85)',
       },
       button: {
         primary: '#4ADE80',

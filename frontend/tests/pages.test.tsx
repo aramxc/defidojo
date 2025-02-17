@@ -24,7 +24,7 @@ describe('Page Loading Tests', () => {
     render(
       <ThemeProvider>
         <ChatProvider>
-          <ChallengePage params={{ id: '1' }} />
+          <ChallengePage  />
         </ChatProvider>
       </ThemeProvider>
     );

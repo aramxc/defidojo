@@ -37,8 +37,7 @@ export interface ChallengeTag {
   export interface Challenge {
     id: string;
     title: string;
-    difficulty: 'Easy' | 'Medium' | 'Hard';
-    tags: ChallengeTag[];
+    difficulty: string;
     description: string;
     examples: Array<{
       input: string;
@@ -46,17 +45,21 @@ export interface ChallengeTag {
       explanation?: string;
     }>;
     constraints: string[];
-    authorId: string;
-    createdAt: Date;
-    updatedAt: Date;
-    solutions: Solution[];
-    testCases: TestCase[];
-    // Voting metrics
+    initial_code: string | null;
+    author_id: string;
+    author_name: string;
+    is_template: boolean;
+    is_draft: boolean;
+    parent_template_id: string | null;
     upvotes: number;
     downvotes: number;
-    totalVotes: number;
-    // Optional fields for template/draft functionality
-    isTemplate?: boolean;
-    isDraft?: boolean;
-    parentTemplateId?: string;
+    total_votes: number;
+    created_at: string;
+    updated_at: string;
+    tags?: Array<{
+      id: string;
+      name: string;
+      color: string;
+      backgroundColor: string;
+    }>;
   }

@@ -41,7 +41,7 @@ export default function ChallengeHeader({ challenge }: ChallengeHeaderProps) {
         >
           {challenge.difficulty}
         </span>
-        {challenge.tags.map((tag) => (
+        {challenge.tags?.map((tag) => (
           <span
             key={tag.id}
             className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium`}

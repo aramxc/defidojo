@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   frontend:
     build:
@@ -10,15 +12,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://backend:8000}
-      - WATCHPACK_POLLING=true
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 2G
-    depends_on:
-      - backend
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api 
     command: npm run dev
 
   backend:
@@ -34,17 +28,19 @@ services:
       - DB_USER=${DB_USER:-dojo_admin}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME:-defidojo}
-      - DB_HOST=${DB_HOST:-postgres}
-      - DB_PORT=${DB_PORT:-5432}
-      - DATABASE_URL=${DATABASE_URL}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DATABASE_URL=postgresql://${DB_USER:-dojo_admin}:${DB_PASSWORD}@postgres:5432/${DB_NAME:-defidojo}
       - PYTHONPATH=/app
+      - CORS_ORIGINS=http://localhost:3000
+      - CORS_ALLOW_CREDENTIALS=true
     command: python src/main.py
     depends_on:
       postgres:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
-      interval: 10s
+      interval: 30s
       timeout: 5s
       retries: 3
       start_period: 5s

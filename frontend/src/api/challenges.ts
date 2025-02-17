@@ -1,37 +1,40 @@
 import { Challenge, Solution } from '@/types/challenge';
 import { fetchApi } from './config';
 
+type ChallengeParams = {
+  difficulty?: string;
+  tag?: string;
+  page?: number;
+  per_page?: number;
+}
 
 export const challengeApi = {
   getChallenge: async (id: string): Promise<Challenge> => {
-    const response = await fetchApi(`/challenge/${id}`) as { data: Challenge };
-    return response.data;
+    return fetchApi(`challenges/${id}`);
   },
 
-  // getChallenges: async (params?: {
-  //   difficulty?: string;
-  //   tag?: string;
-  //   page?: number;
-  //   per_page?: number;
-  // }): Promise<{
-  //   challenges: Challenge[];
-  //   total: number;
-  //   page: number;
-  //   per_page: number;
-  //   pages: number;
-  // }> => {
-  //   const response = await fetchApi('/challenge', { params });
-  //   return response.data;
-  // },
+  getChallenges: async (params?: ChallengeParams) => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== '') {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
+
+    const endpoint = `challenges${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    console.log('Requesting challenges with endpoint:', endpoint);
+    return fetchApi(endpoint);
+  },
 
   submitSolution: async (challengeId: string, solution: {
     code: string;
     language: string;
-  }) => {
-    const response = await fetchApi(`/challenge/${challengeId}/solutions`, {
+  }): Promise<Solution> => {
+    return fetchApi(`challenges/${challengeId}/solutions`, {
       method: 'POST',
       body: JSON.stringify(solution),
-    }) as { data: Solution };
-    return response.data;
+    });
   },
 };

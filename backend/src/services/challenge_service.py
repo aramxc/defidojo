@@ -57,28 +57,58 @@ class ChallengeService:
         return Tag.query.all()
 
     @staticmethod
-    async def get_challenges(tag: Optional[str] = None, **kwargs):
-        """Get challenges with optional tag filter"""
-        query = select(Challenge)
+    async def get_challenges(
+        difficulty: Optional[str] = None,
+        tag: Optional[str] = None,
+        page: int = 1,
+        per_page: int = 20,
+        **kwargs
+    ):
+        """Get challenges with filters and pagination"""
+        # Start with base query
+        query = db.session.query(Challenge)
+
+        # Apply filters with case-insensitive matching
+        if difficulty:
+            # Convert difficulty to title case to match database format (e.g., "easy" -> "Easy")
+            formatted_difficulty = difficulty.title()
+            query = query.filter(Challenge.difficulty == formatted_difficulty)
         
         if tag:
-            # Efficient join query using the junction table
             query = (
                 query.join(challenge_tags)
                 .join(Tag)
                 .filter(Tag.name.ilike(f'%{tag}%'))
+                .distinct(Challenge.id)
             )
-            
-        # Add count query for pagination
-        count_query = select(func.count()).select_from(query.subquery())
         
-        # Execute queries
-        challenges = await db.session.execute(query)
-        total = await db.session.execute(count_query)
+        # Get total count
+        count_query = db.session.query(func.count(db.distinct(Challenge.id)))
+        if difficulty:
+            count_query = count_query.filter(Challenge.difficulty == formatted_difficulty)
+        if tag:
+            count_query = (
+                count_query.join(challenge_tags)
+                .join(Tag)
+                .filter(Tag.name.ilike(f'%{tag}%'))
+            )
+        
+        total_count = count_query.scalar()
+        
+        # Add pagination
+        offset = (page - 1) * per_page
+        challenges = query.offset(offset).limit(per_page).all()
+        
+        # # Debug logging
+        # print(f"Query params - difficulty: {difficulty}, tag: {tag}")
+        # print(f"Found {total_count} challenges")
         
         return {
-            'challenges': challenges.scalars().all(),
-            'total': total.scalar(),
+            'challenges': challenges,
+            'total': total_count,
+            'page': page,
+            'per_page': per_page,
+            'pages': (total_count + per_page - 1) // per_page
         }
 
     @staticmethod
