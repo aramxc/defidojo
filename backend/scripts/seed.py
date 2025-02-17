@@ -1,39 +1,66 @@
-from sqlalchemy import text
-from src.main import create_app
-from src.models import db, User, Challenge, Tag
-from src.config import get_database_url
 import os
+import sys
+from pathlib import Path
+from dotenv import load_dotenv
 
+# Add backend directory to Python path
+backend_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(backend_dir))
 
-def is_database_empty():
-    """Check if the database is empty by looking for any existing users or challenges"""
-    return (
-        User.query.first() is None and 
-        Challenge.query.first() is None and
-        Tag.query.first() is None
-    )
+# Load env from backend directory
+load_dotenv(backend_dir / '.env')
 
-
-def seed_database(environment='local'):
-    """Seed the database with initial data only if it's empty.
+def get_database_url(environment):
+    """Get database URL based on environment.
     
     Args:
-        environment (str): Either 'local' or 'development'
+        environment (str): Either 'docker', 'local', or 'production'
+    Returns:
+        str: Database URL
     """
-    os.environ['FLASK_ENV'] = environment
-    os.environ['DATABASE_URL'] = get_database_url(environment)
+    if environment == 'production':
+        return (
+            f"postgresql://{os.getenv('NEON_DB_USER')}:{os.getenv('NEON_DB_PASSWORD')}"
+            f"@{os.getenv('NEON_DB_HOST')}/{os.getenv('NEON_DB_DATABASE')}?sslmode=require"
+        )
+    elif environment == 'docker':
+        return (
+            f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}"
+            f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+        )
+    else:  # local
+        return (
+            f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}"
+            f"@localhost:{os.getenv('DB_PORT_LOCAL')}/{os.getenv('DB_NAME')}"
+        )
+
+def seed_database(environment='local'):
+    """Seed the database with initial data.
     
-    app = create_app()
+    Args:
+        environment (str): Either 'docker', 'local', or 'production'
+    """
+    # Set up database URL before importing Flask
+    db_url = get_database_url(environment)
+    os.environ['SQLALCHEMY_DATABASE_URI'] = db_url
+    
+    # Now import Flask-related modules
+    from src.main import create_app
+    from src.models import db, User, Challenge, Tag
+    from sqlalchemy import text
+    
+    print(f"🌱 Starting seed process for {environment} database...")
+    app = create_app(environment)
     
     with app.app_context():
-        print(f"Checking {environment} database...")
+        print(f"Checking {environment} database connection...")
         try:
             # Test database connection
             db.session.execute(text('SELECT 1'))
             print("Database connection successful!")
             
             # Check if database is empty
-            if not is_database_empty():
+            if User.query.first() or Challenge.query.first() or Tag.query.first():
                 print("Database already contains data, skipping seed.")
                 return
             
@@ -49,7 +76,6 @@ def seed_database(environment='local'):
             db.session.commit()
 
             print("Creating tags...")
-            # Create tags
             tags = [
                 Tag(
                     name="Solidity",
@@ -71,7 +97,6 @@ def seed_database(environment='local'):
             db.session.commit()
 
             print("Creating challenge...")
-            # Create test challenge
             challenge = Challenge(
                 title="Simple Token Balance Checker",
                 difficulty="Easy",
@@ -101,19 +126,21 @@ def seed_database(environment='local'):
             db.session.add(challenge)
             db.session.commit()
 
-            print("Database seeded successfully!")
+            print("✅ Database seeded successfully!")
             
         except Exception as e:
-            print(f"Database error: {str(e)}")
+            print(f"❌ Database error: {str(e)}")
             raise
 
-
 if __name__ == "__main__":
-    import sys
     env = sys.argv[1] if len(sys.argv) > 1 else 'local'
+    if env not in ['local', 'docker', 'production']:
+        print("Error: Environment must be 'local', 'docker', or 'production'")
+        sys.exit(1)
+    
     try:
         seed_database(env)
-        print(f"Seed process completed for {env} database!")
+        print(f"✨ Seed process completed for {env} database!")
     except Exception as e:
         print(f"Error seeding database: {str(e)}")
         sys.exit(1)

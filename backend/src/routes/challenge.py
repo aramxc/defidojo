@@ -7,7 +7,7 @@ from typing import Optional
 from src.utils.auth import require_auth
 from src.utils.validation import validate_request
 
-challenge_routes = Blueprint('challenge', __name__, url_prefix='/challenge')
+challenge_routes = Blueprint('challenge', __name__, url_prefix='/challenges')
 
 
 @challenge_routes.route('', methods=['POST'])
@@ -30,9 +30,13 @@ async def create_challenge():
         return jsonify({'error': str(e)}), 400
 
 
-@challenge_routes.route('', methods=['GET'])
+@challenge_routes.route('', methods=['GET', 'OPTIONS'])
 async def get_challenges():
     """Get challenges with optional filters"""
+    # Handle OPTIONS request
+    if request.method == 'OPTIONS':
+        return '', 204
+        
     try:
         difficulty: Optional[str] = request.args.get('difficulty')
         tag: Optional[str] = request.args.get('tag')

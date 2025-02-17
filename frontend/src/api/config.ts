@@ -5,14 +5,14 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost
 export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
   const url = `${API_BASE_URL}/${endpoint}`;
   
-  // // debug logging
-  // console.log('API Request Details:', {
-  //   fullUrl: url,
-  //   baseUrl: API_BASE_URL,
-  //   endpoint,
-  //   environment: process.env.NODE_ENV,
-  //   apiUrl: process.env.NEXT_PUBLIC_API_URL,
-  // });
+  // debug logging
+  console.log('API Request Details:', {
+    fullUrl: url,
+    baseUrl: API_BASE_URL,
+    endpoint,
+    environment: process.env.NODE_ENV,
+    apiUrl: process.env.NEXT_PUBLIC_API_URL,
+  });
   
   // Default options for all requests
   const defaultOptions: RequestInit = {
