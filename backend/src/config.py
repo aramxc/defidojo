@@ -1,28 +1,37 @@
 import os
-from urllib.parse import quote_plus
 from dotenv import load_dotenv
+from urllib.parse import quote_plus
 
 load_dotenv()
 
 
-class Config:
-    if os.getenv('ENVIRONMENT') == 'production':
-        # Handle Vercel's postgres:// URL format
-        db_url = os.getenv('DATABASE_URL')
-        if db_url and db_url.startswith('postgres://'):
-            SQLALCHEMY_DATABASE_URI = db_url.replace('postgres://', 'postgresql://')
-        else:
-            SQLALCHEMY_DATABASE_URI = db_url
-    else:
-        DB_USER = os.getenv('DB_USER', 'dojo_admin')
-        DB_PASSWORD = quote_plus(os.getenv('DB_PASSWORD', ''))  
-        DB_HOST = os.getenv('DB_HOST', 'host.docker.internal')  
-        DB_PORT = os.getenv('DB_PORT', '5432')
-        DB_NAME = os.getenv('DB_NAME', 'defidojo')
-        
-        SQLALCHEMY_DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-        
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+def get_database_url(environment='local'):
+    """Get database URL based on environment.
+    
+    Args:
+        environment (str): Either 'local' or 'development'
+    Returns:
+        str: Database URL
+    """
+    user = os.getenv('DB_USER', 'dojo_admin')
+    password = os.getenv('DB_PASSWORD')
+    if not password:
+        raise ValueError("DB_PASSWORD environment variable is required")
+    
+    host = os.getenv('DB_HOST', 'localhost')
+    port = os.getenv('DB_PORT', '5433')
+    db_name = os.getenv('DB_NAME', 'defidojo')
+    
+    # Properly escape special characters in password
+    password = quote_plus(password)
+    
+    return f'postgresql://{user}:{password}@{host}:{port}/{db_name}'
 
-    # Other configurations
+
+class Config:
+    """Application configuration."""
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev-key-please-change-in-production')
+    
+    # Use the database URL function
+    SQLALCHEMY_DATABASE_URI = get_database_url(os.getenv('FLASK_ENV'))

@@ -18,7 +18,7 @@ export function EnterButton() {
     
     
     // Navigate
-    router.push('/challenge');
+    router.push('/challengeSelection');
     
     // Remove fade-out class after navigation
     document.body.classList.remove('fade-out');

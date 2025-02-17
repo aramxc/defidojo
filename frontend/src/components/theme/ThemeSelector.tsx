@@ -37,7 +37,7 @@ export default function ThemeSelector() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 py-2 rounded-lg bg-theme-panel-bg border border-theme-panel-border shadow-lg">
+        <div className="absolute right-0 mt-2 w-40 py-2 rounded-lg bg-theme-panel-bg border border-theme-panel-border shadow-lg">
           {Object.entries(themes).map(([key, value]) => (
             <button
               key={key}
@@ -45,7 +45,7 @@ export default function ThemeSelector() {
                 setTheme(key);
                 setIsOpen(false);
               }}
-              className={`w-full px-4 py-2 text-left text-sm hover:bg-theme-bg-accent/30 transition-colors
+              className={`w-full px-4 py-2 text-left text-sm hover:bg-theme-bg-accent transition-colors
                 ${theme === key ? 'text-theme-button-primary' : 'text-theme-text-primary'}`}
             >
               <div className="flex items-center gap-2">
