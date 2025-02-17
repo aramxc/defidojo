@@ -14,7 +14,6 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isOpen, setIsOpen] = useState(false);
   const toggleChat = () => setIsOpen(prev => !prev);
   
-  // Include all Nebula functionality
   const nebulaState = useNebula();
 
   return (

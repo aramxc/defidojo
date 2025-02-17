@@ -1,5 +1,5 @@
 import sqlalchemy
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 import os
 from dotenv import load_dotenv
 
@@ -8,7 +8,7 @@ load_dotenv()
 
 def _init_tcp_connection_engine(db_config):
     if os.getenv('ENVIRONMENT') == 'production':
-        
+        # Use Neon database URL in production
         database_url = os.getenv('DATABASE_URL')
         if database_url:
             return create_engine(database_url, **db_config)
@@ -54,7 +54,8 @@ engine = _init_connection_engine()
 def verify_db_connection():
     try:
         with engine.connect() as conn:
-            conn.execute("SELECT 1")
+            conn.execute(text("SELECT 1"))
+            conn.commit()
         return True
     except Exception as e:
         print(f"Database connection failed: {e}")

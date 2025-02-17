@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   frontend:
     build:
@@ -6,12 +8,11 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+      - next-cache:/app/.next
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://backend:8000}
-    depends_on:
-      - backend
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api 
     command: npm run dev
 
   backend:
@@ -24,17 +25,94 @@ services:
       - "8000:8000"
     environment:
       - ENVIRONMENT=${ENVIRONMENT:-development}
-      - DB_HOST=host.docker.internal
-      - PYTHONPATH=/app/src
+      - DB_USER=${DB_USER:-dojo_admin}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME:-defidojo}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DATABASE_URL=postgresql://${DB_USER:-dojo_admin}:${DB_PASSWORD}@postgres:5432/${DB_NAME:-defidojo}
+      - PYTHONPATH=/app
+      - CORS_ORIGINS=http://localhost:3000
+      - CORS_ALLOW_CREDENTIALS=true
     command: python src/main.py
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 10s
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
       timeout: 5s
       retries: 3
       start_period: 5s
 
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${DB_USER:-dojo_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-defidojo}
+      POSTGRES_HOST_AUTH_METHOD: trust
+    command:
+      - "postgres"
+      - "-c"
+      - "password_encryption=md5"
+    ports:
+      - "5433:5432" # Local database: localhost:5432 -> Docker database: localhost:5433
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dojo_admin -d defidojo"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  migration:
+    build:
+      context: ./backend
+      target: development
+    volumes:
+      - ./backend:/app
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - DB_USER=${DB_USER:-dojo_admin}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME:-defidojo}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - PYTHONPATH=/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "flask db upgrade"
+
+  seed:
+    build:
+      context: ./backend
+      target: development
+    volumes:
+      - ./backend:/app
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - DB_USER=${DB_USER:-dojo_admin}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME:-defidojo}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - PYTHONPATH=/app
+    depends_on:
+      migration:
+        condition: service_completed_successfully
+    command: python src/seed.py development
+
 volumes:
   postgres_data:
+    driver: local  # Simplified volume configuration
+  next-cache:
+    driver: local

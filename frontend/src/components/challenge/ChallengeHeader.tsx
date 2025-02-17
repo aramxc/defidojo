@@ -1,8 +1,14 @@
 import { Challenge } from '@/types/challenge';
+import { Rock_Salt } from 'next/font/google';
 
 interface ChallengeHeaderProps {
   challenge: Challenge;
 }
+
+const brushFont = Rock_Salt({ 
+  weight: '400',
+  subsets: ['latin'],
+});
 
 export default function ChallengeHeader({ challenge }: ChallengeHeaderProps) {
   // Map difficulty to color scheme
@@ -21,9 +27,10 @@ export default function ChallengeHeader({ challenge }: ChallengeHeaderProps) {
     },
   };
 
+
   return (
     <div className="mb-4 lg:mb-6">
-      <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-theme-text-dark mb-2" data-testid="challenge-title">
+      <h1 className={`text-xl md:text-2xl lg:text-3xl font-bold text-theme-text-dark mb-2 ${brushFont.className}`} data-testid="challenge-title">
         {challenge.title}
       </h1>
       <div className="flex flex-wrap items-center gap-2 md:gap-3">
@@ -34,7 +41,7 @@ export default function ChallengeHeader({ challenge }: ChallengeHeaderProps) {
         >
           {challenge.difficulty}
         </span>
-        {challenge.tags.map((tag) => (
+        {challenge.tags?.map((tag) => (
           <span
             key={tag.id}
             className={`px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium`}

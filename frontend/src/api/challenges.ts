@@ -1,41 +1,38 @@
-import { Challenge } from '@/types/challenge';
+import { Challenge, Solution } from '@/types/challenge';
 import { fetchApi } from './config';
 
-export const challengesApi = {
-  getChallenge(id: string) {
-    return fetchApi<Challenge>(`/challenges/${id}`);
+type ChallengeParams = {
+  difficulty?: string;
+  tag?: string;
+  page?: number;
+  per_page?: number;
+}
+
+export const challengeApi = {
+  getChallenge: async (id: string): Promise<Challenge> => {
+    return fetchApi(`challenges/${id}`);
   },
 
-  getChallenges(params?: {
-    difficulty?: 'Easy' | 'Medium' | 'Hard';
-    tags?: string[];
-    page?: number;
-    limit?: number;
-  }) {
-    const searchParams = new URLSearchParams();
-    if (params?.difficulty) searchParams.set('difficulty', params.difficulty);
-    if (params?.tags) searchParams.set('tags', params.tags.join(','));
-    if (params?.page) searchParams.set('page', params.page.toString());
-    if (params?.limit) searchParams.set('limit', params.limit.toString());
+  getChallenges: async (params?: ChallengeParams) => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== '') {
+          queryParams.append(key, value.toString());
+        }
+      });
+    }
 
-    return fetchApi<{
-      challenges: Challenge[];
-      total: number;
-      page: number;
-    }>(`/challenges?${searchParams.toString()}`);
+    const endpoint = `challenges${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    console.log('Requesting challenges with endpoint:', endpoint);
+    return fetchApi(endpoint);
   },
 
-  submitSolution(challengeId: string, solution: {
+  submitSolution: async (challengeId: string, solution: {
     code: string;
     language: string;
-  }) {
-    return fetchApi<{
-      success: boolean;
-      results: Array<{
-        passed: boolean;
-        message: string;
-      }>;
-    }>(`/challenges/${challengeId}/submit`, {
+  }): Promise<Solution> => {
+    return fetchApi(`challenges/${challengeId}/solutions`, {
       method: 'POST',
       body: JSON.stringify(solution),
     });
