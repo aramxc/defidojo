@@ -20,6 +20,11 @@ def create_app(config_name=None):
     """
     app = Flask(__name__)
     
+    # Enhanced logging for startup configuration
+    logger.info("=== Application Startup ===")
+    logger.info(f"Python path: {os.getenv('PYTHONPATH')}")
+    logger.info(f"Database URL: {os.getenv('DATABASE_URL', 'Not set')}")
+    
     # Determine environment if not explicitly provided
     env = config_name or get_environment()
     logger.info(f"Starting application in {env} environment")
@@ -58,20 +63,54 @@ def create_app(config_name=None):
     # Initialize routes
     init_routes(app)
     
+    # Add error handlers
+    @app.errorhandler(500)
+    def handle_500(error):
+        logger.error(f"Internal Server Error: {error}", exc_info=True)
+        return {"error": "Internal Server Error", "details": str(error)}, 500
+
+    @app.errorhandler(Exception)
+    def handle_exception(error):
+        logger.error(f"Unhandled Exception: {error}", exc_info=True)
+        return {"error": "Internal Server Error", "details": str(error)}, 500
+
     return app
 
+# Single handler implementation for both development and production
+def handler(request):
+    """Handle requests for Vercel serverless functions"""
+    try:
+        logger.info("=== New Serverless Request ===")
+        logger.info(f"Request path: {request.path}")
+        logger.info(f"Request method: {request.method}")
+        logger.info(f"Request headers: {dict(request.headers)}")
+        
+        app = create_app('production')
+        
+        with app.request_context(request):
+            try:
+                response = app(request)
+                logger.info(f"Response status: {response.status_code}")
+                return response
+            except Exception as e:
+                logger.error("Error processing request", exc_info=True)
+                return app.make_response(({
+                    "error": "Internal Server Error",
+                    "details": str(e)
+                }, 500))
+    except Exception as e:
+        logger.error("Critical error in handler", exc_info=True)
+        return {
+            "statusCode": 500,
+            "body": {
+                "error": "Critical Server Error",
+                "details": str(e)
+            }
+        }
 
 env = get_environment()
 
-if env == 'production':
-    # Vercel serverless function handler
-    def handler(request):
-        """Handle requests for Vercel serverless functions"""
-        app = create_app('production')  
-        with app.request_context(request):
-            return app(request)
-else:
-    # Local development server
-    if __name__ == '__main__':
-        app = create_app() 
-        app.run(host='0.0.0.0', port=8000, debug=True) 
+# Local development server only
+if __name__ == '__main__' and env != 'production':
+    app = create_app()
+    app.run(host='0.0.0.0', port=8000, debug=True) 

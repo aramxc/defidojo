@@ -14,7 +14,16 @@
       }
     ],
     "env": {
-      "PYTHONPATH": "src",
-      "ENVIRONMENT": "production"
+      "PYTHONPATH": ".",
+      "ENVIRONMENT": "production",
+      "PYTHON_VERSION": "3.9"
+    },
+    "git": {
+      "deploymentEnabled": {
+        "main": true,
+        "develop": true,
+        "feature/*": true,
+        "fix/*": true
+      }
     }
   }
