@@ -45,7 +45,8 @@ export default function ThemeSelector() {
                 setTheme(key);
                 setIsOpen(false);
               }}
-              className={`w-full px-4 py-2 text-left text-sm hover:bg-theme-bg-accent transition-colors
+              className={`w-full px-4 py-2 text-left text-sm transition-all duration-200
+                hover:bg-theme-button-primary hover:bg-opacity-10
                 ${theme === key ? 'text-theme-button-primary' : 'text-theme-text-primary'}`}
             >
               <div className="flex items-center gap-2">
