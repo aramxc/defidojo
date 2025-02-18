@@ -44,7 +44,7 @@ describe('Page Loading Tests', () => {
     render(
       <ThemeProvider>
         <ChatProvider>
-          <ChallengePage />
+          <ChallengePage  />
         </ChatProvider>
       </ThemeProvider>
     );
