@@ -105,7 +105,16 @@ services:
       postgres:
         condition: service_healthy
     command: >
-      sh -c "flask db init && flask db migrate -m 'initial migration' && flask db upgrade"
+      sh -c "
+        if [ -d migrations ]; then
+          echo 'Migrations directory exists, running upgrade...' &&
+          flask db upgrade
+        else
+          echo 'Initializing new migrations...' &&
+          flask db init &&
+          flask db migrate -m 'initial migration' &&
+          flask db upgrade
+        fi"
 
   seed:
     build:

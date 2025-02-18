@@ -1,6 +1,8 @@
 import { loader } from '@monaco-editor/react';
 import { solidityLanguageConfig } from './monaco-solidity';
+import { rustLanguageConfig } from './monaco-rust';
 import { editor } from 'monaco-editor';
+import { languages } from 'monaco-editor';
 
 // Editor default options
 export const editorOptions: editor.IStandaloneEditorConstructionOptions = {
@@ -35,13 +37,17 @@ export const initMonaco = () => {
     monaco.languages.register({ id: 'solidity' });
     monaco.languages.setMonarchTokensProvider('solidity', solidityLanguageConfig);
     
-    // Add language configuration for auto-closing brackets
-    monaco.languages.setLanguageConfiguration('solidity', {
+    // Register Rust language
+    monaco.languages.register({ id: 'rust' });
+    monaco.languages.setMonarchTokensProvider('rust', rustLanguageConfig);
+    
+    // Add language configurations
+    const commonConfig: languages.LanguageConfiguration = {
       brackets: [
-        ['{', '}'],
-        ['[', ']'],
         ['(', ')'],
-      ],
+        ['[', ']'],
+        ['{', '}']
+      ] as languages.CharacterPair[],
       autoClosingPairs: [
         { open: '{', close: '}' },
         { open: '[', close: ']' },
@@ -60,6 +66,14 @@ export const initMonaco = () => {
         increaseIndentPattern: /^.*\{[^}"']*$/,
         decreaseIndentPattern: /^.*\}[^{"']*$/
       },
+    };
+
+    monaco.languages.setLanguageConfiguration('solidity', {
+      ...commonConfig,
+    });
+
+    monaco.languages.setLanguageConfiguration('rust', {
+      ...commonConfig,
     });
 
     // Define custom theme
@@ -78,7 +92,7 @@ export const initMonaco = () => {
         { token: 'comment.quote', foreground: '7F848E' },
       ],
       colors: {
-        'editor.background': '#282C34',
+        'editor.background': '#1F2937F7',
       }
     });
   });

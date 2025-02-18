@@ -3,37 +3,58 @@
 import { Editor } from '@monaco-editor/react';
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useChallenge } from '@/contexts/ChallengeContext';
 import { initMonaco, editorOptions } from '@/utils/monaco';
 
 
 type SupportedLanguage = 'solidity' | 'rust' | 'javascript' | 'typescript';
 
-export default function CodeEditor({ initialCode }: { initialCode?: string }) {
+export default function CodeEditor() {
   const { theme } = useTheme();
+  const { challenge, currentCode, setCurrentCode } = useChallenge();
   const [language, setLanguage] = useState<SupportedLanguage>('solidity');
-  const [code, setCode] = useState(initialCode);
 
   useEffect(() => {
     initMonaco();
-  }, []);
+    
+    // Determine language from tags
+    if (challenge?.tags) {
+      const hasRust = challenge.tags.some(tag => tag.name.toLowerCase() === 'rust');
+      const hasSolidity = challenge.tags.some(tag => tag.name.toLowerCase() === 'solidity');
+      
+      if (hasRust) {
+        setLanguage('rust');
+      } else if (hasSolidity) {
+        setLanguage('solidity');
+      }
+    }
+  }, [challenge?.tags]);
 
   const handleLanguageChange = (newLang: SupportedLanguage) => {
     setLanguage(newLang);
-    setCode(newLang === 'solidity' && initialCode ? initialCode : '// Your code here');
+    if (challenge?.initial_code) {
+      setCurrentCode(challenge.initial_code);
+    } else {
+      setCurrentCode('// Your code here');
+    }
   };
 
   const handleReset = () => {
-    setCode(language === 'solidity' && initialCode ? initialCode : '// Your code here');
+    if (challenge?.initial_code) {
+      setCurrentCode(challenge.initial_code);
+    } else {
+      setCurrentCode('// Your code here');
+    }
   };
 
   const handleCopy = () => {
-    if (code) {
-      navigator.clipboard.writeText(code);
+    if (currentCode) {
+      navigator.clipboard.writeText(currentCode);
     }
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col rounded-xl ">
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-4">
           <h2 className="text-xl font-semibold text-theme-text-primary">Solution</h2>
@@ -48,9 +69,8 @@ export default function CodeEditor({ initialCode }: { initialCode?: string }) {
                 MozAppearance: 'none'
               }}
             >
-              <option value="javascript" className="bg-theme-panel-bg text-theme-text-primary">JavaScript</option>
-              <option value="typescript" className="bg-theme-panel-bg text-theme-text-primary">TypeScript</option>
               <option value="solidity" className="bg-theme-panel-bg text-theme-text-primary">Solidity</option>
+              <option value="rust" className="bg-theme-panel-bg text-theme-text-primary">Rust</option>
             </select>
             {/* Custom dropdown arrow */}
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-theme-text-primary">
@@ -76,12 +96,12 @@ export default function CodeEditor({ initialCode }: { initialCode?: string }) {
         </div>
       </div>
       
-      <div className="flex-1 min-h-0">
+      <div className="flex-1 min-h-0 rounded-b-xl overflow-hidden">
         <Editor
           height="100%"
           language={language}
-          value={code}
-          onChange={(value) => value && setCode(value)}
+          value={currentCode}
+          onChange={(value) => value && setCurrentCode(value)}
           theme={theme === 'light' ? 'light' : 'vs-dark-solidity'}
           options={{
             ...editorOptions,

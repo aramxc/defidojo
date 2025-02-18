@@ -17,8 +17,11 @@ FIXED_IDS = {
     'challenge': 'cbc65716-075f-42c4-a159-e49a62b5d845',
     'tags': {
         'solidity': '8c1bfee3-5759-4c0b-a374-b13fb4f9264c',
+        'rust': 'f1e2d3c4-b5a6-7890-cdef-123456789abc',
+        'near_protocol': 'a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6',
         'erc20': 'd47b81f0-962c-4d76-9535-3e1af6146f7f',
-        'view_functions': 'e94f68c9-b8a7-4c0d-b8f3-497d8f608175'
+        'defi': 'b2c3d4e5-f6g7-h8i9-j0k1-l2m3n4o5p6q7',
+        'advanced': 'c3d4e5f6-g7h8-i9j0-k1l2-m3n4o5p6q7r8'
     }
 }
 
@@ -78,6 +81,49 @@ def seed_database(environment='local'):
             
             print("Database is empty, starting seed process...")
             
+            # Create tags first
+            tags = {
+                'solidity': Tag(
+                    id=FIXED_IDS['tags']['solidity'],
+                    name='Solidity',
+                    color='rgb(103, 76, 196)',
+                    background_color='rgba(103, 76, 196, 0.1)'
+                ),
+                'rust': Tag(
+                    id=FIXED_IDS['tags']['rust'],
+                    name='Rust',
+                    color='rgb(183, 65, 14)',
+                    background_color='rgba(183, 65, 14, 0.1)'
+                ),
+                'near_protocol': Tag(
+                    id=FIXED_IDS['tags']['near_protocol'],
+                    name='NEAR Protocol',
+                    color='rgb(0, 114, 206)',
+                    background_color='rgba(0, 114, 206, 0.1)'
+                ),
+                'erc20': Tag(
+                    id=FIXED_IDS['tags']['erc20'],
+                    name='ERC20',
+                    color='rgb(52, 211, 153)',
+                    background_color='rgba(52, 211, 153, 0.1)'
+                ),
+                'defi': Tag(
+                    id=FIXED_IDS['tags']['defi'],
+                    name='DeFi',
+                    color='rgb(236, 72, 153)',
+                    background_color='rgba(236, 72, 153, 0.1)'
+                ),
+                'advanced': Tag(
+                    id=FIXED_IDS['tags']['advanced'],
+                    name='Advanced',
+                    color='rgb(220, 38, 38)',
+                    background_color='rgba(220, 38, 38, 0.1)'
+                )
+            }
+            
+            db.session.add_all(tags.values())
+            db.session.commit()
+
             # Create test user with fixed ID
             user = User(
                 id=FIXED_IDS['user'],
@@ -86,30 +132,6 @@ def seed_database(environment='local'):
                 wallet_address="0x123456789abcdef123456789abcdef123456789a"
             )
             db.session.add(user)
-            db.session.commit()
-
-            print("Creating tags...")
-            tags = [
-                Tag(
-                    id=FIXED_IDS['tags']['solidity'],
-                    name="Solidity",
-                    color="rgb(103, 76, 196)",
-                    background_color="rgba(103, 76, 196, 0.1)"
-                ),
-                Tag(
-                    id=FIXED_IDS['tags']['erc20'],
-                    name="ERC20",
-                    color="rgb(59, 130, 246)",
-                    background_color="rgba(59, 130, 246, 0.1)"
-                ),
-                Tag(
-                    id=FIXED_IDS['tags']['view_functions'],
-                    name="View Functions",
-                    color="rgb(16, 185, 129)",
-                    background_color="rgba(16, 185, 129, 0.1)"
-                )
-            ]
-            db.session.add_all(tags)
             db.session.commit()
 
             print("Creating challenges...")
@@ -150,7 +172,8 @@ contract Challenge {
 ''',
                     author_id=user.id,
                     author_name=user.username,
-                    tags=[tag for tag in tags if tag.name in ["Solidity", "ERC20", "View Functions"]]
+                    tags=[tags['solidity'], tags['erc20']],
+                    upvotes=2
                 ),
                 
                 # Medium Solidity Challenge
@@ -202,7 +225,8 @@ contract TokenVesting {
 ''',
                     author_id=user.id,
                     author_name=user.username,
-                    tags=[tag for tag in tags if tag.name in ["Solidity", "ERC20"]]
+                    tags=[tags['solidity'], tags['defi']],
+                    upvotes=1
                 ),
                 
                 # Hard Solidity Challenge
@@ -253,7 +277,8 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
 ''',
                     author_id=user.id,
                     author_name=user.username,
-                    tags=[tag for tag in tags if tag.name in ["Solidity", "Advanced"]]
+                    tags=[tags['solidity'], tags['advanced']],
+                    upvotes=8
                 ),
                 
                 # Easy Rust Challenge
@@ -292,7 +317,8 @@ impl Contract {
 ''',
                     author_id=user.id,
                     author_name=user.username,
-                    tags=[tag for tag in tags if tag.name in ["Rust", "NEAR Protocol"]]
+                    tags=[tags['rust'], tags['near_protocol']],
+                    upvotes=4
                 ),
                 
                 # Medium Rust Challenge
@@ -342,7 +368,8 @@ impl NFTStaking {
 ''',
                     author_id=user.id,
                     author_name=user.username,
-                    tags=[tag for tag in tags if tag.name in ["Rust", "NEAR Protocol"]]
+                    tags=[tags['rust'], tags['near_protocol']],
+                    upvotes=6
                 ),
                 
                 # Hard Rust Challenge
@@ -394,7 +421,8 @@ impl DexAggregator {
 ''',
                     author_id=user.id,
                     author_name=user.username,
-                    tags=[tag for tag in tags if tag.name in ["Rust", "NEAR Protocol", "Advanced"]]
+                    tags=[tags['rust'], tags['near_protocol'], tags['advanced']],
+                    upvotes=10
                 )
             ]
             
