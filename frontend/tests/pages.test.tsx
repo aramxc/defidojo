@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import ChallengePage from '@/app/challenge/[id]/page';
 import { ThemeProvider } from '@/contexts/ThemeContext';
-import { ChatProvider } from '@/contexts/ChatContext';
 import { describe, test, expect, jest } from '@jest/globals';
 
 // Mock next/navigation
@@ -11,46 +10,55 @@ jest.mock('next/navigation', () => ({
   }),
 }));
 
-// Mock challenge API
-jest.mock('@/api/challenges', () => ({
-  challengeApi: {
-    getChallenge: () => Promise.resolve({
+// Mock next/font/google
+jest.mock('next/font/google', () => ({
+  Rock_Salt: () => ({
+    className: 'mocked-font',
+    style: { fontFamily: 'mocked-font' },
+  }),
+}));
+
+// Mock the ChallengeContext
+jest.mock('@/contexts/ChallengeContext', () => ({
+  ChallengeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useChallenge: () => ({
+    challenge: {
       id: '1',
       title: 'Test Challenge',
       description: 'Test Description',
       difficulty: 'easy',
       initial_code: 'function test() {}',
+      constraints: ['Constraint 1'],
       tags: [
-        { id: '1', name: 'Solidity', color: '#fff', backgroundColor: '#000' },
-        { id: '2', name: 'ERC20', color: '#fff', backgroundColor: '#000' }
+        { id: '1', name: 'Solidity', color: '#fff', backgroundColor: '#000' }
       ]
-    }),
-  },
+    },
+    loading: false,
+    error: null,
+    currentCode: 'function test() {}'
+  }),
 }));
 
-// Mock ChatContext
-jest.mock('@/contexts/ChatContext', () => ({
-  ChatProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  useChat: () => ({
-    isOpen: false,
-    toggleChat: jest.fn(),
-    messages: [],
-    sendMessage: jest.fn(),
-  })
+// Mock react-syntax-highlighter
+jest.mock('react-syntax-highlighter', () => ({
+  Prism: ({ children }: { children: React.ReactNode }) => <pre>{children}</pre>,
 }));
 
-describe('Page Loading Tests', () => {
-  test('Challenge page loads', async () => {
+jest.mock('react-syntax-highlighter/dist/esm/styles/prism', () => ({
+  vscDarkPlus: {},
+}));
+
+
+
+describe('Challenge Page Tests', () => {
+  test('Challenge page renders with title', async () => {
     render(
       <ThemeProvider>
-        <ChatProvider>
-          <ChallengePage  />
-        </ChatProvider>
+        <ChallengePage />
       </ThemeProvider>
     );
 
-    // Wait for the challenge to load
-    const element = await screen.findByText('Test Challenge');
-    expect(element).toBeTruthy();
+    const titleElement = await screen.findByText('Test Challenge');
+    expect(titleElement).toBeTruthy();
   });
 });
