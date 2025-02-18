@@ -5,32 +5,13 @@ import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { initMonaco, editorOptions } from '@/utils/monaco';
 
-const LANGUAGE_SAMPLES = {
-  solidity: `// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
 
-contract Challenge {
-    function hasEnoughTokens(address account, uint256 minBalance) public view returns (bool) {
-        // Your code here
-        
-    }
-}`,
-  javascript: `function arraySum(numbers) {
-  // Your code here
-  
-}`,
-  typescript: `function arraySum(numbers: number[]): number {
-  // Your code here
-  return 0;
-}`,
-};
+type SupportedLanguage = 'solidity' | 'rust' | 'javascript' | 'typescript';
 
-type SupportedLanguage = keyof typeof LANGUAGE_SAMPLES;
-
-export default function CodeEditor() {
+export default function CodeEditor({ initialCode }: { initialCode?: string }) {
   const { theme } = useTheme();
   const [language, setLanguage] = useState<SupportedLanguage>('solidity');
-  const [code, setCode] = useState(LANGUAGE_SAMPLES[language]);
+  const [code, setCode] = useState(initialCode);
 
   useEffect(() => {
     initMonaco();
@@ -38,20 +19,22 @@ export default function CodeEditor() {
 
   const handleLanguageChange = (newLang: SupportedLanguage) => {
     setLanguage(newLang);
-    setCode(LANGUAGE_SAMPLES[newLang]);
+    setCode(newLang === 'solidity' && initialCode ? initialCode : '// Your code here');
   };
 
   const handleReset = () => {
-    setCode(LANGUAGE_SAMPLES[language]);
+    setCode(language === 'solidity' && initialCode ? initialCode : '// Your code here');
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(code);
+    if (code) {
+      navigator.clipboard.writeText(code);
+    }
   };
 
   return (
-    <div className="h-full">
-      <div className="flex items-center justify-between mb-4">
+    <div className="h-full flex flex-col">
+      <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-4">
           <h2 className="text-xl font-semibold text-theme-text-primary">Solution</h2>
           <div className="relative">
@@ -93,14 +76,17 @@ export default function CodeEditor() {
         </div>
       </div>
       
-      <div className="h-[400px] rounded-lg overflow-hidden">
+      <div className="flex-1 min-h-0">
         <Editor
           height="100%"
           language={language}
           value={code}
           onChange={(value) => value && setCode(value)}
           theme={theme === 'light' ? 'light' : 'vs-dark-solidity'}
-          options={editorOptions}
+          options={{
+            ...editorOptions,
+            automaticLayout: true,
+          }}
         />
       </div>
     </div>

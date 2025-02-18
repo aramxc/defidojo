@@ -13,7 +13,7 @@ def _init_tcp_connection_engine(db_config):
         if database_url:
             return create_engine(database_url, **db_config)
     
-    # Local development
+    # Docker development
     db_user = os.getenv("DB_USER", "dojo_admin")
     db_name = os.getenv("DB_NAME", "defidojo")
     db_host = os.getenv("DB_HOST", "localhost")
