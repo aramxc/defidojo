@@ -112,31 +112,33 @@ def seed_database(environment='local'):
             db.session.add_all(tags)
             db.session.commit()
 
-            print("Creating challenge...")
-            challenge = Challenge(
-                id=FIXED_IDS['challenge'],
-                title="Simple Token Balance Checker",
-                difficulty="Easy",
-                description="Create a function that checks if an address has a token balance greater than a specified amount.",
-                examples=[
-                    {
-                        "input": "hasEnoughTokens(0x123...789, 50)",
-                        "output": "true",
-                        "explanation": "Address has 100 tokens, which is greater than minimum balance of 50"
-                    },
-                    {
-                        "input": "hasEnoughTokens(0x456...abc, 150)",
-                        "output": "false",
-                        "explanation": "Address has 100 tokens, which is less than minimum balance of 150"
-                    }
-                ],
-                constraints=[
-                    "Account address must be a valid Ethereum address",
-                    "minBalance must be greater than 0",
-                    "Function must be marked as view",
-                    "Use the provided _balances mapping to check balances"
-                ],
-                initial_code='''// SPDX-License-Identifier: MIT
+            print("Creating challenges...")
+            challenges = [
+                # Existing Easy Solidity Challenge
+                Challenge(
+                    id=uuid.uuid4(),
+                    title="Simple Token Balance Checker",
+                    difficulty="Easy",
+                    description="Create a function that checks if an address has a token balance greater than a specified amount.",
+                    examples=[
+                        {
+                            "input": "hasEnoughTokens(0x123...789, 50)",
+                            "output": "true",
+                            "explanation": "Address has 100 tokens, which is greater than minimum balance of 50"
+                        },
+                        {
+                            "input": "hasEnoughTokens(0x456...abc, 150)",
+                            "output": "false",
+                            "explanation": "Address has 100 tokens, which is less than minimum balance of 150"
+                        }
+                    ],
+                    constraints=[
+                        "Account address must be a valid Ethereum address",
+                        "minBalance must be greater than 0",
+                        "Function must be marked as view",
+                        "Use the provided _balances mapping to check balances"
+                    ],
+                    initial_code='''// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract Challenge {
@@ -146,14 +148,260 @@ contract Challenge {
     }
 }
 ''',
-                author_id=user.id,
-                author_name=user.username,
-                tags=tags
-            )
-            db.session.add(challenge)
+                    author_id=user.id,
+                    author_name=user.username,
+                    tags=[tag for tag in tags if tag.name in ["Solidity", "ERC20", "View Functions"]]
+                ),
+                
+                # Medium Solidity Challenge
+                Challenge(
+                    id=uuid.uuid4(),
+                    title="Token Vesting Schedule",
+                    difficulty="Medium",
+                    description="Implement a token vesting schedule where tokens are released linearly over time. The contract should handle multiple beneficiaries and allow the owner to revoke unvested tokens.",
+                    examples=[
+                        {
+                            "input": "createVestingSchedule(0x123...789, 1000, 365 days)",
+                            "output": "true",
+                            "explanation": "Creates a vesting schedule for 1000 tokens over 1 year"
+                        },
+                        {
+                            "input": "claimVestedTokens()",
+                            "output": "500",
+                            "explanation": "Claims 500 tokens after 6 months (50% of vesting period)"
+                        }
+                    ],
+                    constraints=[
+                        "Only owner can create vesting schedules",
+                        "Vesting period must be greater than 0",
+                        "Must implement proper access control",
+                        "Must handle time-based calculations correctly"
+                    ],
+                    initial_code='''// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract TokenVesting {
+    struct VestingSchedule {
+        uint256 totalAmount;
+        uint256 startTime;
+        uint256 duration;
+        uint256 amountClaimed;
+        bool revoked;
+    }
+    
+    // TODO: Implement vesting schedule mapping and functions
+    
+    function createVestingSchedule(address beneficiary, uint256 amount, uint256 duration) external {
+        // Your code here
+    }
+    
+    function claimVestedTokens() external returns (uint256) {
+        // Your code here
+    }
+}
+''',
+                    author_id=user.id,
+                    author_name=user.username,
+                    tags=[tag for tag in tags if tag.name in ["Solidity", "ERC20"]]
+                ),
+                
+                # Hard Solidity Challenge
+                Challenge(
+                    id=uuid.uuid4(),
+                    title="Flash Loan Arbitrage",
+                    difficulty="Hard",
+                    description="Implement a flash loan contract that executes arbitrage between multiple DEXes. The contract should borrow tokens, execute trades, and repay the loan in a single transaction.",
+                    examples=[
+                        {
+                            "input": "executeArbitrage(1000 ETH)",
+                            "output": "true",
+                            "explanation": "Executes successful arbitrage with 1000 ETH flash loan"
+                        }
+                    ],
+                    constraints=[
+                        "Must implement AAVE flash loan interface",
+                        "Must be profitable after gas costs",
+                        "Must handle multiple DEX interactions",
+                        "Must implement proper security checks",
+                        "Must repay flash loan in same transaction"
+                    ],
+                    initial_code='''// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol";
+import "@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol";
+
+contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
+    constructor(address _addressProvider)
+        FlashLoanSimpleReceiverBase(IPoolAddressesProvider(_addressProvider))
+    {}
+    
+    function executeOperation(
+        address asset,
+        uint256 amount,
+        uint256 premium,
+        address initiator,
+        bytes calldata params
+    ) external override returns (bool) {
+        // Your arbitrage logic here
+    }
+    
+    function executeArbitrage(uint256 amount) external {
+        // Your code here
+    }
+}
+''',
+                    author_id=user.id,
+                    author_name=user.username,
+                    tags=[tag for tag in tags if tag.name in ["Solidity", "Advanced"]]
+                ),
+                
+                # Easy Rust Challenge
+                Challenge(
+                    id=uuid.uuid4(),
+                    title="Simple NEAR Token Balance",
+                    difficulty="Easy",
+                    description="Implement a simple token contract on NEAR Protocol that allows checking account balances.",
+                    examples=[
+                        {
+                            "input": 'get_balance("alice.near")',
+                            "output": "100",
+                            "explanation": "Returns the token balance for alice.near"
+                        }
+                    ],
+                    constraints=[
+                        "Must use proper NEAR account ID validation",
+                        "Must implement proper storage management",
+                        "Must handle account not found cases"
+                    ],
+                    initial_code='''use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
+use near_sdk::{near_bindgen, AccountId, Balance};
+
+#[near_bindgen]
+#[derive(BorshDeserialize, BorshSerialize)]
+pub struct Contract {
+    // TODO: Implement contract storage
+}
+
+#[near_bindgen]
+impl Contract {
+    pub fn get_balance(&self, account_id: AccountId) -> Balance {
+        // Your code here
+    }
+}
+''',
+                    author_id=user.id,
+                    author_name=user.username,
+                    tags=[tag for tag in tags if tag.name in ["Rust", "NEAR Protocol"]]
+                ),
+                
+                # Medium Rust Challenge
+                Challenge(
+                    id=uuid.uuid4(),
+                    title="NFT Staking Contract",
+                    difficulty="Medium",
+                    description="Create a NEAR contract that allows users to stake their NFTs and earn rewards based on staking duration.",
+                    examples=[
+                        {
+                            "input": 'stake_nft("token_id_123")',
+                            "output": "true",
+                            "explanation": "Stakes an NFT with the given token ID"
+                        },
+                        {
+                            "input": 'claim_rewards()',
+                            "output": "50",
+                            "explanation": "Claims accumulated rewards"
+                        }
+                    ],
+                    constraints=[
+                        "Must verify NFT ownership",
+                        "Must track staking duration",
+                        "Must calculate rewards correctly",
+                        "Must handle unstaking properly"
+                    ],
+                    initial_code='''use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
+use near_sdk::{near_bindgen, AccountId, Promise};
+use near_sdk::collections::UnorderedMap;
+
+#[near_bindgen]
+#[derive(BorshDeserialize, BorshSerialize)]
+pub struct NFTStaking {
+    // TODO: Implement staking storage and logic
+}
+
+#[near_bindgen]
+impl NFTStaking {
+    pub fn stake_nft(&mut self, token_id: String) -> Promise {
+        // Your code here
+    }
+    
+    pub fn claim_rewards(&mut self) -> Promise {
+        // Your code here
+    }
+}
+''',
+                    author_id=user.id,
+                    author_name=user.username,
+                    tags=[tag for tag in tags if tag.name in ["Rust", "NEAR Protocol"]]
+                ),
+                
+                # Hard Rust Challenge
+                Challenge(
+                    id=uuid.uuid4(),
+                    title="Cross-Contract DEX Aggregator",
+                    difficulty="Hard",
+                    description="Implement a DEX aggregator that splits trades across multiple NEAR Protocol DEXes to find the best rates, handling cross-contract calls and complex error scenarios.",
+                    examples=[
+                        {
+                            "input": 'swap_tokens("NEAR", "USDT", "1000000000000000000000000")',
+                            "output": "true",
+                            "explanation": "Executes a swap of 1 NEAR for USDT across multiple DEXes"
+                        }
+                    ],
+                    constraints=[
+                        "Must handle multiple DEX interactions",
+                        "Must implement proper error handling",
+                        "Must optimize for best rates",
+                        "Must handle cross-contract callbacks",
+                        "Must implement proper gas management"
+                    ],
+                    initial_code='''use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
+use near_sdk::{near_bindgen, AccountId, Balance, Promise, Gas};
+use near_sdk::collections::UnorderedMap;
+
+#[near_bindgen]
+#[derive(BorshDeserialize, BorshSerialize)]
+pub struct DexAggregator {
+    // TODO: Implement DEX aggregator storage and logic
+}
+
+#[near_bindgen]
+impl DexAggregator {
+    pub fn swap_tokens(
+        &mut self,
+        token_in: AccountId,
+        token_out: AccountId,
+        amount: Balance
+    ) -> Promise {
+        // Your code here
+    }
+    
+    #[private]
+    pub fn handle_swap_callback(&mut self) {
+        // Your code here
+    }
+}
+''',
+                    author_id=user.id,
+                    author_name=user.username,
+                    tags=[tag for tag in tags if tag.name in ["Rust", "NEAR Protocol", "Advanced"]]
+                )
+            ]
+            
+            db.session.add_all(challenges)
             db.session.commit()
 
-            print("✅ Database seeded successfully!")
+            print("✅ Database seeded successfully with all challenges!")
             
         except Exception as e:
             print(f"❌ Database error: {str(e)}")

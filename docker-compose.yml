@@ -105,7 +105,7 @@ services:
       postgres:
         condition: service_healthy
     command: >
-      sh -c "flask db upgrade"
+      sh -c "flask db init && flask db migrate -m 'initial migration' && flask db upgrade"
 
   seed:
     build:

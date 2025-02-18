@@ -22,7 +22,7 @@
       "deploymentEnabled": {
         "main": true,
         "develop": true,
-        "feature/*": true,
+        "feature/*": false,
         "fix/*": true
       }
     }
