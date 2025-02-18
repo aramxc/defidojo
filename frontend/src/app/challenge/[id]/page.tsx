@@ -56,44 +56,62 @@ export default function ChallengePage() {
       </div>
     );
   }
+  console.log('Challenge data:', challenge); // Add this line to debug
+
 
   return (
     <PageLayout>
       <div className="relative container mx-auto px-4 py-4 h-screen flex flex-col">
-        <div className="flex items-center mb-4">
-          <Link
-            href="/challengeSelection"
-            className="inline-flex items-center text-theme-text-dark hover:text-theme-text-accent transition-colors duration-200"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-            </svg>
-            Choose Different Challenge
-          </Link>
-          
-          {/* Center the Challenge Header */}
-          <div className="flex-1 flex justify-center">
-            <ChallengeHeader challenge={challenge} />
+        {/* Updated Header Section with reduced spacing on large screens */}
+        <div className="mb-4">
+          {/* Stack on mobile, inline on desktop */}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-6">
+            {/* Back Button */}
+            <Link
+              href="/challengeSelection"
+              className="inline-flex items-center text-theme-text-dark hover:text-theme-text-accent transition-colors duration-200"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              <span className="font-bold whitespace-nowrap">Choose Different</span>
+            </Link>
+
+            {/* Challenge Header - Center */}
+            <div className="flex-1 flex justify-center">
+              <ChallengeHeader challenge={challenge} />
+            </div>
+
+            {/* Forward Button */}
+            <Link
+              href="#"
+              className="inline-flex items-center text-theme-text-dark hover:text-theme-text-accent transition-colors duration-200"
+            >
+              <span className="whitespace-nowrap font-bold">Next Challenge</span>
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           </div>
         </div>
 
-        {/* Main Challenge Area - Responsive Grid */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 min-h-0">
+        {/* Updated Main Challenge Area with better height distribution */}
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 min-h-0 overflow-auto">
           {/* Left Panel - Description */}
           <div className="bg-theme-panel-bg rounded-xl backdrop-blur-sm border border-theme-panel-border 
-                        flex flex-col min-h-[300px] lg:min-h-0 order-2 lg:order-1">
-            <div className="p-4 lg:p-6 overflow-y-auto custom-scrollbar">
+                        flex flex-col h-[300px] lg:h-full">
+            <div className="p-4 lg:p-6 overflow-y-auto custom-scrollbar h-full">
               <ChallengeDescription challenge={challenge} />
             </div>
           </div>
 
           {/* Right Panel - Code Editor & Results */}
-          <div className="flex flex-col gap-4 min-h-0 order-1 lg:order-2">
-            {/* Code Editor */}
-            <div className="flex-1 bg-theme-panel-bg rounded-xl backdrop-blur-sm border border-theme-panel-border 
-                          min-h-[300px] lg:min-h-0">
-              <div className="h-full p-4 lg:p-6">
-                <CodeEditor />
+          <div className="flex flex-col gap-4 h-full">
+            {/* Code Editor - Takes up remaining space */}
+            <div className="bg-theme-panel-bg rounded-xl backdrop-blur-sm border border-theme-panel-border 
+                          h-[400px] lg:flex-1">
+              <div className="h-full">
+                <CodeEditor initialCode={challenge.initial_code || ''} />
               </div>
             </div>
             
@@ -104,7 +122,7 @@ export default function ChallengePage() {
 
             {/* Test Results Panel */}
             <div className="bg-theme-panel-bg rounded-xl backdrop-blur-sm border border-theme-panel-border">
-              <div className="p-4 lg:p-6 max-h-[200px] overflow-y-auto custom-scrollbar">
+              <div className="p-4 lg:p-6 h-[200px] overflow-y-auto custom-scrollbar">
                 <TestResults />
               </div>
             </div>

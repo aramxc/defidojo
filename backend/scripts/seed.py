@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
+import uuid
 
 # Add backend directory to Python path
 backend_dir = Path(__file__).parent.parent
@@ -9,6 +10,17 @@ sys.path.insert(0, str(backend_dir))
 
 # Load env from backend directory
 load_dotenv(backend_dir / '.env')
+
+
+FIXED_IDS = {
+    'user': 'f5e5abb2-d6ce-4aee-a471-e407807e4d6e',
+    'challenge': 'cbc65716-075f-42c4-a159-e49a62b5d845',
+    'tags': {
+        'solidity': '8c1bfee3-5759-4c0b-a374-b13fb4f9264c',
+        'erc20': 'd47b81f0-962c-4d76-9535-3e1af6146f7f',
+        'view_functions': 'e94f68c9-b8a7-4c0d-b8f3-497d8f608175'
+    }
+}
 
 def get_database_url(environment):
     """Get database URL based on environment.
@@ -66,8 +78,9 @@ def seed_database(environment='local'):
             
             print("Database is empty, starting seed process...")
             
-            # Create test user
+            # Create test user with fixed ID
             user = User(
+                id=FIXED_IDS['user'],
                 username="defi_master",
                 email="defi@example.com",
                 wallet_address="0x123456789abcdef123456789abcdef123456789a"
@@ -78,16 +91,19 @@ def seed_database(environment='local'):
             print("Creating tags...")
             tags = [
                 Tag(
+                    id=FIXED_IDS['tags']['solidity'],
                     name="Solidity",
                     color="rgb(103, 76, 196)",
                     background_color="rgba(103, 76, 196, 0.1)"
                 ),
                 Tag(
+                    id=FIXED_IDS['tags']['erc20'],
                     name="ERC20",
                     color="rgb(59, 130, 246)",
                     background_color="rgba(59, 130, 246, 0.1)"
                 ),
                 Tag(
+                    id=FIXED_IDS['tags']['view_functions'],
                     name="View Functions",
                     color="rgb(16, 185, 129)",
                     background_color="rgba(16, 185, 129, 0.1)"
@@ -98,6 +114,7 @@ def seed_database(environment='local'):
 
             print("Creating challenge...")
             challenge = Challenge(
+                id=FIXED_IDS['challenge'],
                 title="Simple Token Balance Checker",
                 difficulty="Easy",
                 description="Create a function that checks if an address has a token balance greater than a specified amount.",
@@ -119,6 +136,16 @@ def seed_database(environment='local'):
                     "Function must be marked as view",
                     "Use the provided _balances mapping to check balances"
                 ],
+                initial_code='''// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Challenge {
+    function hasEnoughTokens(address account, uint256 minBalance) public view returns (bool) {
+        // Your code here
+        
+    }
+}
+''',
                 author_id=user.id,
                 author_name=user.username,
                 tags=tags
