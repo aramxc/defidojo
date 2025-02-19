@@ -7,6 +7,14 @@ import { Message, ChatContext } from '@/hooks/useNebula';
 import { ContextSelector } from './ContextSelector';
 import CloseIcon from '@mui/icons-material/Close';
 
+export const ThinkingDots: React.FC = () => (
+  <span className="inline-flex items-center">
+    <span className="animate-pulse">.</span>
+    <span className="animate-pulse" style={{ animationDelay: '200ms' }}>.</span>
+    <span className="animate-pulse" style={{ animationDelay: '400ms' }}>.</span>
+  </span>
+);
+
 const ChatWindow: React.FC = () => {
   const { isOpen, toggleChat, messages } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -24,13 +32,6 @@ const ChatWindow: React.FC = () => {
 
   if (!isOpen) return null;
 
-  const ThinkingDots: React.FC = () => (
-    <span className="inline-flex items-center">
-      <span className="animate-pulse">.</span>
-      <span className="animate-pulse" style={{ animationDelay: '200ms' }}>.</span>
-      <span className="animate-pulse" style={{ animationDelay: '400ms' }}>.</span>
-    </span>
-  );
 
   const renderMessageContent = (message: Message) => {
     if (message.status === 'thinking') {

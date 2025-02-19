@@ -7,8 +7,7 @@ import { useChallenge } from '@/hooks/useChallenge';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { Challenge } from '@/types/challenge';
 import { Rock_Salt } from 'next/font/google';
-
-
+import TagBadge from '@/components/shared/TagBadge';
 import PageLayout from '@/components/layout/PageLayout';
 
 const brushFont = Rock_Salt({ 
@@ -69,17 +68,20 @@ export default function ChallengesPage() {
 
   return (
     <PageLayout>
-      <div className="relative container mx-auto px-4 py-4 h-screen flex flex-col">
-        {/* Updated Header Section to match challenge page */}
-        <div className="mb-4">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-6">
+      <div className="relative container mx-auto px-4 h-screen flex flex-col">
+        {/* Fixed Header Section with gradient fade */}
+        <div className="flex-shrink-0 pt-4 pb-4 bg-theme-background z-10 relative">
+          {/* Add fade effect at the bottom */}
+          <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-theme-background to-transparent z-20"></div>
+          
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-6 mb-4">
             {/* Empty div for left spacing */}
             <div className="w-[200px]" />
 
             {/* Title - Center */}
             <div className="flex-1 flex justify-center">
               <div className="text-center">
-                <h1 className={`text-xl md:text-2xl lg:text-3xl font-bold text-theme-text-dark ${brushFont.className}`}>
+                <h1 className={`text-xl md:text-2xl lg:text-3xl lg:py-6 font-bold text-theme-text-dark ${brushFont.className}`}>
                   Choose Your Challenge
                 </h1>
               </div>
@@ -88,14 +90,11 @@ export default function ChallengesPage() {
             {/* Empty div for right spacing */}
             <div className="w-[200px]" />
           </div>
-        </div>
 
-        {/* Main Content - Lower z-index */}
-        <div className="flex-1 overflow-auto relative z-0">
-          <div className="max-w-4xl mx-auto">
-            {/* Search Form - Higher z-index */}
-            <form onSubmit={handleSearch} className="relative z-20 mb-8 space-y-4 bg-theme-panel-bg backdrop-blur-sm 
-                                                   border border-theme-panel-border rounded-xl p-6">
+          {/* Search Form - Fixed position with max-width */}
+          <div className="max-w-4xl mx-auto relative z-30">
+            <form onSubmit={handleSearch} className="relative mb-4 space-y-4 bg-theme-panel-bg backdrop-blur-sm 
+                                                 border border-theme-panel-border rounded-xl p-6">
               <div className="flex flex-col md:flex-row gap-4">
                 <input
                   type="text"
@@ -105,12 +104,12 @@ export default function ChallengesPage() {
                   className="flex-1 p-3 rounded-lg bg-theme-background-secondary border border-theme-panel-border
                            text-theme-text-dark placeholder-theme-text-accent focus:ring-2 focus:ring-theme-primary"
                 />
-                {/* Dropdown - Highest z-index */}
+                {/* DifficultyDropdown */}
                 <div className="relative w-full md:w-40 difficulty-dropdown" style={{ zIndex: 30 }}>
                   <button
                     type="button"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-theme-panel-bg 
+                    className="w-full flex items-center justify-between h-full px-3 py-2 rounded-lg bg-theme-panel-bg 
                              border border-theme-panel-border hover:border-theme-button-primary transition-colors"
                   >
                     <span className="text-theme-text-primary text-sm font-medium">
@@ -152,74 +151,82 @@ export default function ChallengesPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
 
-            {/* Results - Lowest z-index */}
-            <div className="relative z-10">
-              {loading ? (
-                <LoadingSpinner />
-              ) : !hasSearched ? (
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-center text-theme-text-secondary mt-8 bg-theme-panel-bg backdrop-blur-sm 
-                             border border-theme-panel-border rounded-xl p-8"
-                >
-                  <p className="text-xl">Select your preferences and search for challenges</p>
-                  <p className="mt-2">Use the filters above to find challenges that match your interests</p>
-                </motion.div>
-              ) : challenges.length === 0 ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-center text-theme-text-secondary mt-8 bg-theme-panel-bg backdrop-blur-sm 
-                             border border-theme-panel-border rounded-xl p-8"
-                >
-                  <p className="text-xl">No challenges found</p>
-                  <p className="mt-2">Try adjusting your search criteria</p>
-                </motion.div>
-              ) : (
-                <div className="space-y-4">
-                  {challenges.map((challenge) => (
-                    <motion.div
-                      key={challenge.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      whileHover={{ scale: 1.02 }}
-                      className="bg-theme-panel-bg backdrop-blur-sm border border-theme-panel-border 
-                               rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                      <Link href={`/challenge/${challenge.id}`} className="block">
-                        <h2 className="text-xl font-semibold mb-2 text-theme-text">
+        {/* Scrollable Results Section */}
+        <div className="flex-1 overflow-y-auto min-h-0 flex items-center flex-col">
+          <div className="w-full max-w-4xl px-4">
+            {loading ? (
+              <LoadingSpinner />
+            ) : !hasSearched ? (
+              <motion.div 
+                initial={{ opacity: 1 }}
+                animate={{ opacity: 1 }}
+                className="text-center text-theme-text-secondary mt-8 bg-theme-panel-bg 
+                         border border-theme-panel-border rounded-xl p-8"
+              >
+                <p className="text-xl">Select your preferences and search for challenges</p>
+                <p className="mt-2">Use the filters above to find challenges that match your interests</p>
+              </motion.div>
+            ) : challenges.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 1 }}
+                animate={{ opacity: 1 }}
+                className="text-center text-theme-text-secondary mt-8 bg-theme-panel-bg 
+                         border border-theme-panel-border rounded-xl p-8"
+              >
+                <p className="text-xl">No challenges found</p>
+                <p className="mt-2">Try adjusting your search criteria</p>
+              </motion.div>
+            ) : (
+              <div className="space-y-4 pb-6">
+                {challenges.map((challenge) => (
+                  <motion.div
+                    key={challenge.id}
+                    initial={{ opacity: 1, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-theme-panel-bg border border-theme-panel-border 
+                             rounded-xl p-6 shadow-lg transition-all duration-300"
+                  >
+                    <Link href={`/challenge/${challenge.id}`} className="block">
+                      <div className="flex justify-between items-start mb-2">
+                        <h2 className="text-xl font-semibold text-theme-text">
                           {challenge.title}
                         </h2>
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          {challenge.tags?.map((tag) => (
-                            <span
-                              key={tag.id}
-                              style={{
-                                color: tag.color,
-                                backgroundColor: tag.backgroundColor
-                              }}
-                              className="px-2 py-1 rounded-full text-sm"
-                            >
-                              {tag.name}
-                            </span>
-                          ))}
+                        <div className="flex items-center gap-1 text-theme-text-secondary">
+                          <svg 
+                            className="w-5 h-5" 
+                            fill="currentColor" 
+                            viewBox="0 0 20 20"
+                          >
+                            <path 
+                              fillRule="evenodd" 
+                              d="M10 17.833L8.858 16.825C4.5 12.925 1.667 10.392 1.667 7.25C1.667 4.717 3.683 2.75 6.25 2.75C7.7 2.75 9.092 3.408 10 4.483C10.908 3.408 12.3 2.75 13.75 2.75C16.317 2.75 18.333 4.717 18.333 7.25C18.333 10.392 15.5 12.925 11.142 16.833L10 17.833Z"
+                            />
+                          </svg>
+                          <span className="text-sm font-medium">{challenge.upvotes}</span>
                         </div>
-                        <div className="flex justify-between items-center">
-                          <p className="text-theme-text-secondary">
-                            Difficulty: {challenge.difficulty}
-                          </p>
-                          <span className="text-theme-primary hover:text-theme-primary-hover">
-                            Start Challenge →
-                          </span>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-            </div>
+                      </div>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {challenge.tags?.map((tag) => (
+                          <TagBadge key={tag.id} tag={tag} />
+                        ))}
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <p className="text-theme-text-secondary">
+                          Difficulty: {challenge.difficulty}
+                        </p>
+                        <span className="text-theme-text-dark hover:text-theme-button-dark transition-colors">
+                          Start Challenge →
+                        </span>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

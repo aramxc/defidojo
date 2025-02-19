@@ -21,8 +21,8 @@ export const themes: Record<string, Theme> = {
         secondary: 'rgba(75, 85, 99, 0.3)',
       },
       panel: {
-        background: 'rgba(31, 41, 55, 0.85)',
-        border: 'rgba(75, 85, 99, 0.85)',
+        background: 'rgba(31, 41, 55, 0.97)',
+        border: 'rgba(75, 85, 99, 1)',
       },
       button: {
         primary: '#10B981',
@@ -44,15 +44,15 @@ export const themes: Record<string, Theme> = {
         primary: '#F8FAFC',
         secondary: '#E2E8F0',
         accent: '#94A3B8',
-        dark: '#0A4D68',
+        dark: '#0EA5E9',
       },
       border: {
-        primary: 'rgba(56, 189, 248, 0.4)',
+        primary: 'rgba(75, 85, 99, 0.5)',
         secondary: 'rgba(56, 189, 248, 0.2)',
       },
       panel: {
-        background: 'rgba(15, 23, 42, 0.85)',
-        border: 'rgba(56, 189, 248, 0.85)',
+        background: 'rgba(15, 23, 42, 0.97)',
+        border: 'rgba(75, 85, 99, 1)',
       },
       button: {
         primary: '#0EA5E9',
@@ -77,12 +77,12 @@ export const themes: Record<string, Theme> = {
         dark: '#FF3B1D',
       },
       border: {
-        primary: 'rgba(223, 140, 107, 0.4)',
+        primary: 'rgba(75, 85, 99, 0.5)',
         secondary: 'rgba(223, 140, 107, 0.2)',
       },
       panel: {
-        background: 'rgba(31, 26, 23, 0.85)',
-        border: 'rgba(223, 140, 107, 0.85)',
+        background: 'rgba(31, 26, 23, 0.97)',
+        border: 'rgba(223, 140, 107, 1)',
       },
       button: {
         primary: '#E67E22',
@@ -107,12 +107,12 @@ export const themes: Record<string, Theme> = {
         dark: '#FF0F7B',
       },
       border: {
-        primary: 'rgba(99, 102, 241, 0.4)',
+        primary: 'rgba(75, 85, 99, 0.5)',
         secondary: 'rgba(99, 102, 241, 0.2)',
       },
       panel: {
-        background: 'rgba(17, 24, 39, 0.85)',
-        border: 'rgba(139, 92, 246, 0.85)',
+        background: 'rgba(17, 24, 39, 0.97)',
+        border: 'rgba(75, 85, 99, 1)',
       },
       button: {
         primary: '#FF0F7B',
@@ -141,8 +141,8 @@ export const themes: Record<string, Theme> = {
         secondary: 'rgba(74, 222, 128, 0.2)',
       },
       panel: {
-        background: 'rgba(15, 23, 42, 0.85)',
-        border: 'rgba(139, 92, 246, 0.85)',
+        background: 'rgba(15, 23, 42, 0.97)',
+        border: 'rgba(75, 85, 99, 1)',
       },
       button: {
         primary: '#4ADE80',

@@ -31,7 +31,7 @@ export default function ThemeSelector() {
           backgroundColor: themes[theme].colors.button.primary,
           borderColor: themes[theme].colors.border.primary 
         }} />
-        <span className="text-theme-text-primary text-sm font-medium">
+        <span className="hidden sm:inline text-theme-text-primary text-sm font-medium">
           {themes[theme].name}
         </span>
       </button>
