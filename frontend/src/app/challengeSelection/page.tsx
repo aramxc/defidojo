@@ -155,8 +155,8 @@ export default function ChallengesPage() {
         </div>
 
         {/* Scrollable Results Section */}
-        <div className="w-full max-w-3xl flex-1 px-4 overflow-y-auto min-h-0 flex items-center flex-col scroll-auto-hide">
-          <div className="w-full pt-4 pb-4">
+        <div className="w-full max-w-3xl flex-1 md: pl-1 lg:pl-3 overflow-y-auto min-h-0 flex items-center flex-col scroll-auto-hide">
+          <div className="w-full pt-4 lg:px-2 pb-4">
             {loading ? (
               <LoadingSpinner />
             ) : !hasSearched ? (
