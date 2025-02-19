@@ -68,9 +68,9 @@ export default function ChallengesPage() {
 
   return (
     <PageLayout>
-      <div className="relative container mx-auto px-4 h-screen flex flex-col">
+      <div className="relative mx-auto px-4 h-screen flex flex-col items-center">
         {/* Fixed Header Section with gradient fade */}
-        <div className="flex-shrink-0 pt-4 pb-4 bg-theme-background z-10 relative">
+        <div className="w-full max-w-3xl flex-shrink-0 pt-4 pb-4 bg-theme-background z-10 relative">
           {/* Add fade effect at the bottom */}
           <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-theme-background to-transparent z-20"></div>
           
@@ -92,7 +92,7 @@ export default function ChallengesPage() {
           </div>
 
           {/* Search Form - Fixed position with max-width */}
-          <div className="max-w-4xl mx-auto relative z-30">
+          <div className="w-full relative z-30">
             <form onSubmit={handleSearch} className="relative mb-4 space-y-4 bg-theme-panel-bg backdrop-blur-sm 
                                                  border border-theme-panel-border rounded-xl p-6">
               <div className="flex flex-col md:flex-row gap-4">
@@ -155,8 +155,8 @@ export default function ChallengesPage() {
         </div>
 
         {/* Scrollable Results Section */}
-        <div className="flex-1 overflow-y-auto min-h-0 flex items-center flex-col">
-          <div className="w-full max-w-4xl px-4">
+        <div className="w-full max-w-3xl flex-1 px-4 overflow-y-auto min-h-0 flex items-center flex-col scroll-auto-hide">
+          <div className="w-full pt-4 pb-4">
             {loading ? (
               <LoadingSpinner />
             ) : !hasSearched ? (
@@ -164,7 +164,7 @@ export default function ChallengesPage() {
                 initial={{ opacity: 1 }}
                 animate={{ opacity: 1 }}
                 className="text-center text-theme-text-secondary mt-8 bg-theme-panel-bg 
-                         border border-theme-panel-border rounded-xl p-8"
+                         border border-theme-panel-border rounded-xl p-8 mx-4"
               >
                 <p className="text-xl">Select your preferences and search for challenges</p>
                 <p className="mt-2">Use the filters above to find challenges that match your interests</p>
@@ -174,7 +174,7 @@ export default function ChallengesPage() {
                 initial={{ opacity: 1 }}
                 animate={{ opacity: 1 }}
                 className="text-center text-theme-text-secondary mt-8 bg-theme-panel-bg 
-                         border border-theme-panel-border rounded-xl p-8"
+                         border border-theme-panel-border rounded-xl p-8 mx-4"
               >
                 <p className="text-xl">No challenges found</p>
                 <p className="mt-2">Try adjusting your search criteria</p>
@@ -195,7 +195,7 @@ export default function ChallengesPage() {
                         <h2 className="text-xl font-semibold text-theme-text">
                           {challenge.title}
                         </h2>
-                        <div className="flex items-center gap-1 text-theme-text-secondary">
+                        <div className="flex items-center gap-1 text-theme-button-primary">
                           <svg 
                             className="w-5 h-5" 
                             fill="currentColor" 
@@ -206,7 +206,7 @@ export default function ChallengesPage() {
                               d="M10 17.833L8.858 16.825C4.5 12.925 1.667 10.392 1.667 7.25C1.667 4.717 3.683 2.75 6.25 2.75C7.7 2.75 9.092 3.408 10 4.483C10.908 3.408 12.3 2.75 13.75 2.75C16.317 2.75 18.333 4.717 18.333 7.25C18.333 10.392 15.5 12.925 11.142 16.833L10 17.833Z"
                             />
                           </svg>
-                          <span className="text-sm font-medium">{challenge.upvotes}</span>
+                          <span className="text-sm font-medium ">{challenge.upvotes}</span>
                         </div>
                       </div>
                       <div className="flex flex-wrap gap-2 mb-3">
@@ -218,7 +218,7 @@ export default function ChallengesPage() {
                         <p className="text-theme-text-secondary">
                           Difficulty: {challenge.difficulty}
                         </p>
-                        <span className="text-theme-text-dark hover:text-theme-button-dark transition-colors">
+                        <span className="text-theme-text-secondary hover:text-theme-button-dark transition-colors">
                           Start Challenge →
                         </span>
                       </div>
