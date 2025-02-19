@@ -5,9 +5,18 @@ import os
 
 app = Flask(__name__)
 
-# Configure CORS
-cors_origin = os.getenv('CORS_ORIGINS', 'http://localhost:3000')
-CORS(app, resources={r"/api/*": {"origins": cors_origin.split(',')}})
+# Configure CORS with more specific settings
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "http://localhost:3000",
+            "https://defidojo.vercel.app"
+        ],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    }
+})
 
 # Root route handler
 @app.route('/')
