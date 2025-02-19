@@ -6,6 +6,7 @@ from src.routes import init_routes
 from flask_migrate import Migrate
 from src.config import get_environment
 import os
+import json
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -76,36 +77,46 @@ def create_app(config_name=None):
 
     return app
 
-# Single handler implementation for both development and production
-def handler(request):
+# Modified handler for Vercel serverless functions
+def handler(event, context):
     """Handle requests for Vercel serverless functions"""
     try:
         logger.info("=== New Serverless Request ===")
-        logger.info(f"Request path: {request.path}")
-        logger.info(f"Request method: {request.method}")
-        logger.info(f"Request headers: {dict(request.headers)}")
+        logger.info(f"Event: {event}")
         
         app = create_app('production')
         
-        with app.request_context(request):
+        # Create a test request context
+        with app.test_request_context(
+            path=event.get('path', '/'),
+            method=event.get('httpMethod', 'GET'),
+            headers=event.get('headers', {}),
+            data=event.get('body', '')
+        ):
             try:
-                response = app(request)
-                logger.info(f"Response status: {response.status_code}")
-                return response
+                response = app.full_dispatch_request()
+                return {
+                    'statusCode': response.status_code,
+                    'headers': dict(response.headers),
+                    'body': response.get_data(as_text=True)
+                }
             except Exception as e:
                 logger.error("Error processing request", exc_info=True)
-                return app.make_response(({
-                    "error": "Internal Server Error",
-                    "details": str(e)
-                }, 500))
+                return {
+                    'statusCode': 500,
+                    'body': json.dumps({
+                        'error': 'Internal Server Error',
+                        'details': str(e)
+                    })
+                }
     except Exception as e:
         logger.error("Critical error in handler", exc_info=True)
         return {
-            "statusCode": 500,
-            "body": {
-                "error": "Critical Server Error",
-                "details": str(e)
-            }
+            'statusCode': 500,
+            'body': json.dumps({
+                'error': 'Critical Server Error',
+                'details': str(e)
+            })
         }
 
 env = get_environment()
