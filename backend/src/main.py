@@ -77,51 +77,68 @@ def create_app(config_name=None):
 
     return app
 
+# Create a global app instance for serverless use
+app = create_app('production')
+
 # Modified handler for Vercel serverless functions
 def handler(event, context):
     """Handle requests for Vercel serverless functions"""
     try:
         logger.info("=== New Serverless Request ===")
-        logger.info(f"Event: {event}")
+        logger.info(f"Event: {json.dumps(event, default=str)}")
         
-        app = create_app('production')
+        # Extract request details from the event
+        path = event.get('path', '/')
+        http_method = event.get('httpMethod', 'GET')
+        headers = event.get('headers', {})
+        body = event.get('body', '')
         
-        # Create a test request context
+        logger.info(f"Processing {http_method} request to {path}")
+        
+        # Handle the request
         with app.test_request_context(
-            path=event.get('path', '/'),
-            method=event.get('httpMethod', 'GET'),
-            headers=event.get('headers', {}),
-            data=event.get('body', '')
-        ):
+            path=path,
+            method=http_method,
+            headers=headers,
+            data=body
+        ) as context:
             try:
                 response = app.full_dispatch_request()
+                
+                # Convert response to Vercel-compatible format
+                response_body = response.get_data(as_text=True)
+                response_headers = dict(response.headers)
+                
+                logger.info(f"Request completed with status code: {response.status_code}")
+                
                 return {
                     'statusCode': response.status_code,
-                    'headers': dict(response.headers),
-                    'body': response.get_data(as_text=True)
+                    'headers': response_headers,
+                    'body': response_body
                 }
+                
             except Exception as e:
-                logger.error("Error processing request", exc_info=True)
+                logger.error(f"Error processing request: {str(e)}", exc_info=True)
                 return {
                     'statusCode': 500,
+                    'headers': {'Content-Type': 'application/json'},
                     'body': json.dumps({
                         'error': 'Internal Server Error',
                         'details': str(e)
                     })
                 }
     except Exception as e:
-        logger.error("Critical error in handler", exc_info=True)
+        logger.error(f"Critical error in handler: {str(e)}", exc_info=True)
         return {
             'statusCode': 500,
+            'headers': {'Content-Type': 'application/json'},
             'body': json.dumps({
                 'error': 'Critical Server Error',
                 'details': str(e)
             })
         }
 
-env = get_environment()
-
 # Local development server only
-if __name__ == '__main__' and env != 'production':
-    app = create_app()
-    app.run(host='0.0.0.0', port=8000, debug=True) 
+if __name__ == '__main__' and get_environment() != 'production':
+    dev_app = create_app()
+    dev_app.run(host='0.0.0.0', port=8000, debug=True) 
