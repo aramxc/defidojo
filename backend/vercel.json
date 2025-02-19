@@ -19,5 +19,10 @@
         "feature/*": false,
         "fix/*": true
       }
+    },
+    "env": {
+      "PYTHONPATH": ".",
+      "ENVIRONMENT": "production",
+      "PYTHON_VERSION": "3.9"
     }
   }

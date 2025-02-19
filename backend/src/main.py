@@ -45,6 +45,10 @@ def create_app(config_name=None):
 # Create the application instance
 app = create_app('production')
 
+# Handler for Vercel serverless
+def handler(event, context):
+    return app
+
 # Development server
 if __name__ == '__main__':
     dev_app = create_app('development')
