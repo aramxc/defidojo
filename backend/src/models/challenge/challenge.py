@@ -1,18 +1,18 @@
 from src.models import db
-from ..utils import generate_uuid, TimestampMixin, CodeFormattingMixin
-
-
+from ..utils import TimestampMixin, CodeFormattingMixin
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 # Junction table for challenge-tag many-to-many relationship
 challenge_tags = db.Table(
     "challenge_tags",
     db.Column(
         "challenge_id",
-        db.String(36),
+        UUID(as_uuid=True),
         db.ForeignKey("challenges.id", ondelete="CASCADE"),
     ),
     db.Column(
         'tag_id',
-        db.String(36),
+        UUID(as_uuid=True),
         db.ForeignKey('tags.id', ondelete='CASCADE'),
     ),
 )
@@ -23,7 +23,7 @@ class Challenge(db.Model, TimestampMixin, CodeFormattingMixin):
     __tablename__ = 'challenges'
 
     # Primary fields
-    id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = db.Column(db.String(255), nullable=False)
     difficulty = db.Column(db.String(20), nullable=False)
     description = db.Column(db.Text, nullable=False)
@@ -35,14 +35,14 @@ class Challenge(db.Model, TimestampMixin, CodeFormattingMixin):
     
     # Author information
     author_id = db.Column(
-        db.String(36), db.ForeignKey('users.id'), nullable=False)
+        UUID(as_uuid=True), db.ForeignKey('users.id'), nullable=False)
     author_name = db.Column(db.String(255), nullable=False)
     
     # Template/draft functionality
     is_template = db.Column(db.Boolean, default=False)
     is_draft = db.Column(db.Boolean, default=False)
     parent_template_id = db.Column(
-        db.String(36),
+        UUID(as_uuid=True),
         db.ForeignKey('challenges.id'),
         nullable=True
     )

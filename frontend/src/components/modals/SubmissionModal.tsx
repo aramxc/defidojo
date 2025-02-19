@@ -43,7 +43,15 @@ export default function SubmissionModal({
       setShowSuggestions(false);
       setProgress(0);
       progressRef.current = 0;
-      const prompt = `With the following problem statement: ${description} ... and constraints:${constraints} ... as context, does the following code: ${submittedCode} ... successfully solve the problem. If yes, return "Code Successful" for your first message followed by "Potential improvements..." for your second message. If no, return "Incorrect" for your first message followed by "Potential Improvements" for your second message that uses as much of the submitted code as possible in order to solve the problem.`;
+      const prompt = `With the following problem statement: ${description} ... 
+      and constraints:${constraints} ... 
+      as context, does the following code: ${submittedCode} ... 
+      successfully solve the problem? 
+      If yes, return "Code Successful" for your first message followed by 
+      "Potential improvements..." for your second message. 
+      If no, return "Incorrect" for your first message followed by "Potential Improvements" for your second message 
+      that uses as much of the submitted code as possible in order to solve the problem in a simple and concise way. 
+      Add comments to help the user understand key concepts.`;
       console.log('Sending prompt:', prompt);
       sendMessage(prompt);
     }
@@ -160,7 +168,7 @@ export default function SubmissionModal({
           {(isThinking || messages[messages.length - 1]?.status === 'typing') ? (
             <div className="flex flex-col items-center gap-6 py-12">
               <h2 className={`text-2xl md:text-3xl font-bold text-theme-text-primary text-center `}>
-                Using Nebula to Analyze Your Code<ThinkingDots />
+                Analyzing your code<ThinkingDots />
               </h2>
               
               <div className="w-full max-w-md h-2 bg-theme-bg-accent/20 rounded-full overflow-hidden">

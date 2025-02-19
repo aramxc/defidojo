@@ -92,7 +92,7 @@ export default function ChallengesPage() {
           </div>
 
           {/* Search Form - Fixed position with max-width */}
-          <div className="w-full relative z-30">
+          <div className="w-full max-w-3xl mx-auto relative z-30">
             <form onSubmit={handleSearch} className="relative mb-4 space-y-4 bg-theme-panel-bg backdrop-blur-sm 
                                                  border border-theme-panel-border rounded-xl p-6">
               <div className="flex flex-col md:flex-row gap-4">
@@ -155,8 +155,8 @@ export default function ChallengesPage() {
         </div>
 
         {/* Scrollable Results Section */}
-        <div className="w-full max-w-3xl flex-1 md: pl-1 lg:pl-3 overflow-y-auto min-h-0 flex items-center flex-col scroll-auto-hide">
-          <div className="w-full pt-4 lg:px-2 pb-4">
+        <div className="w-full max-w-3xl flex-1 overflow-y-auto min-h-0 flex items-center flex-col scroll-auto-hide">
+          <div className="w-full mx-auto">
             {loading ? (
               <LoadingSpinner />
             ) : !hasSearched ? (
@@ -164,7 +164,7 @@ export default function ChallengesPage() {
                 initial={{ opacity: 1 }}
                 animate={{ opacity: 1 }}
                 className="text-center text-theme-text-secondary mt-8 bg-theme-panel-bg 
-                         border border-theme-panel-border rounded-xl p-8 mx-4"
+                         border border-theme-panel-border rounded-xl p-8"
               >
                 <p className="text-xl">Select your preferences and search for challenges</p>
                 <p className="mt-2">Use the filters above to find challenges that match your interests</p>
@@ -174,13 +174,13 @@ export default function ChallengesPage() {
                 initial={{ opacity: 1 }}
                 animate={{ opacity: 1 }}
                 className="text-center text-theme-text-secondary mt-8 bg-theme-panel-bg 
-                         border border-theme-panel-border rounded-xl p-8 mx-4"
+                         border border-theme-panel-border rounded-xl p-8"
               >
                 <p className="text-xl">No challenges found</p>
                 <p className="mt-2">Try adjusting your search criteria</p>
               </motion.div>
             ) : (
-              <div className="space-y-4 pb-6">
+              <div className="space-y-4 pb-6 mx-4">
                 {challenges.map((challenge) => (
                   <motion.div
                     key={challenge.id}

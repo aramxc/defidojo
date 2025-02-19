@@ -1,14 +1,16 @@
 from .. import db
-from ..utils import generate_uuid, TimestampMixin, CodeFormattingMixin
+from ..utils import TimestampMixin, CodeFormattingMixin
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 
 
 class Solution(db.Model, TimestampMixin, CodeFormattingMixin):
     """Represents a user's solution to a challenge."""
     __tablename__ = 'solutions'
     
-    id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
-    challenge_id = db.Column(db.String(36), db.ForeignKey('challenges.id'), nullable=False)
-    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    challenge_id = db.Column(UUID(as_uuid=True), db.ForeignKey('challenges.id'), nullable=False)
+    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id'), nullable=False)
     code = db.Column(db.Text, nullable=False)
     language = db.Column(db.String(50), nullable=False)
     passed_tests = db.Column(db.Boolean, nullable=False)

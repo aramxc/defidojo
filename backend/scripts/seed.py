@@ -17,11 +17,11 @@ FIXED_IDS = {
     'challenge': 'cbc65716-075f-42c4-a159-e49a62b5d845',
     'tags': {
         'solidity': '8c1bfee3-5759-4c0b-a374-b13fb4f9264c',
-        'rust': 'f1e2d3c4-b5a6-7890-cdef-123456789abc',
-        'near_protocol': 'a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6',
+        'rust': 'f1e2d3c4-b5a6-4890-9def-123456789abc',
+        'near_protocol': 'a1b2c3d4-e5f6-4789-89ab-cdef01234567',
         'erc20': 'd47b81f0-962c-4d76-9535-3e1af6146f7f',
-        'defi': 'b2c3d4e5-f6g7-h8i9-j0k1-l2m3n4o5p6q7',
-        'advanced': 'c3d4e5f6-g7h8-i9j0-k1l2-m3n4o5p6q7r8'
+        'defi': 'b2c3d4e5-f6a7-4789-89ab-cdef01234567',
+        'advanced': 'c3d4e5f6-a789-4bcd-9ef0-123456789abc'
     }
 }
 
@@ -55,8 +55,8 @@ def seed_database(environment='local'):
     Args:
         environment (str): Either 'docker', 'local', or 'production'
     """
-    # Set up database URL before importing Flask
     db_url = get_database_url(environment)
+    print(f"🔄 Using database URL: {db_url}")
     os.environ['SQLALCHEMY_DATABASE_URI'] = db_url
     
     # Now import Flask-related modules
@@ -74,14 +74,21 @@ def seed_database(environment='local'):
             db.session.execute(text('SELECT 1'))
             print("Database connection successful!")
             
+            # Check existing data
+            user_count = User.query.count()
+            challenge_count = Challenge.query.count()
+            tag_count = Tag.query.count()
+            print(f"Current data counts - Users: {user_count}, Challenges: {challenge_count}, Tags: {tag_count}")
+            
             # Check if database is empty
-            if User.query.first() or Challenge.query.first() or Tag.query.first():
+            if user_count > 0 or challenge_count > 0 or tag_count > 0:
                 print("Database already contains data, skipping seed.")
                 return
             
             print("Database is empty, starting seed process...")
             
             # Create tags first
+            print("Creating tags...")
             tags = {
                 'solidity': Tag(
                     id=FIXED_IDS['tags']['solidity'],
@@ -429,21 +436,112 @@ impl DexAggregator {
             db.session.add_all(challenges)
             db.session.commit()
 
-            print("✅ Database seeded successfully with all challenges!")
+            # Verify each challenge was written
+            for challenge in challenges:
+                verified = Challenge.query.get(challenge.id)
+                if verified:
+                    print(f"✅ Verified challenge created: {verified.title}")
+                else:
+                    print(f"❌ Failed to verify challenge: {challenge.title}")
+
+            # Double check final counts with fresh queries
+            final_challenges = Challenge.query.all()
+            print("\nFinal Challenge Details:")
+            for c in final_challenges:
+                print(f"ID: {c.id}")
+                print(f"Title: {c.title}")
+                print(f"Created at: {c.created_at}")
+                print("---")
+
+            print(f"\n📊 Final Counts from fresh queries:")
+            print(f"Users: {User.query.count()}")
+            print(f"Challenges: {Challenge.query.count()}")
+            print(f"Tags: {Tag.query.count()}")
+            
+            # Add after the previous checks
+            result = db.session.execute(text('SELECT COUNT(*) FROM public.challenges'))
+            raw_count = result.scalar()
+            print(f"\n🔍 Raw SQL count of challenges: {raw_count}")
+            
+            result = db.session.execute(text('SELECT id, title, created_at FROM public.challenges'))
+            print("\n📝 Raw SQL challenge listing:")
+            for row in result:
+                print(f"ID: {row.id}")
+                print(f"Title: {row.title}")
+                print(f"Created: {row.created_at}")
+                print("---")
             
         except Exception as e:
             print(f"❌ Database error: {str(e)}")
+            db.session.rollback()
             raise
+
+def reset_database(environment='local'):
+    """Reset the database by dropping all data."""
+    db_url = get_database_url(environment)
+    print(f"🔄 Using database URL for reset: {db_url}")
+    os.environ['SQLALCHEMY_DATABASE_URI'] = db_url
+    
+    from src.main import create_app
+    from src.models import db, User, Challenge, Tag
+    
+    print(f"🔄 Starting database reset for {environment}...")
+    app = create_app(environment)
+    
+    with app.app_context():
+        try:
+            # Print initial counts
+            print(f"Initial counts - Users: {User.query.count()}, Challenges: {Challenge.query.count()}, Tags: {Tag.query.count()}")
+            
+            # Drop all data in reverse order of dependencies
+            print("Dropping existing data...")
+            Challenge.query.delete()
+            print("Challenges deleted")
+            User.query.delete()
+            print("Users deleted")
+            Tag.query.delete()
+            print("Tags deleted")
+            db.session.commit()
+            
+            # Print final counts
+            print(f"Final counts - Users: {User.query.count()}, Challenges: {Challenge.query.count()}, Tags: {Tag.query.count()}")
+            print("✅ Database reset successful!")
+            return True
+        except Exception as e:
+            print(f"❌ Error resetting database: {str(e)}")
+            db.session.rollback()
+            return False
 
 if __name__ == "__main__":
     env = sys.argv[1] if len(sys.argv) > 1 else 'local'
+    reset = len(sys.argv) > 2 and sys.argv[2] == '--reset'
+    
     if env not in ['local', 'docker', 'production']:
         print("Error: Environment must be 'local', 'docker', or 'production'")
         sys.exit(1)
     
+    if env == 'production':
+        confirm = input("⚠️  WARNING: You are about to modify the PRODUCTION database. Are you sure? (y/N): ")
+        if confirm.lower() != 'y':
+            print("Aborting.")
+            sys.exit(0)
+        
+        if reset:
+            confirm_reset = input("⚠️  WARNING: This will DELETE ALL EXISTING DATA. Are you really sure? (y/N): ")
+            if confirm_reset.lower() != 'y':
+                print("Aborting.")
+                sys.exit(0)
+    
     try:
+        if reset:
+            if reset_database(env):
+                print(f"Database reset complete for {env}.")
+            else:
+                print("Reset failed, aborting seed.")
+                sys.exit(1)
+        
         seed_database(env)
-        print(f"✨ Seed process completed for {env} database!")
+        print(f"✨ Process completed for {env} database!")
     except Exception as e:
-        print(f"Error seeding database: {str(e)}")
+        print(f"Error: {str(e)}")
         sys.exit(1)
