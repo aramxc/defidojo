@@ -12,11 +12,6 @@
         "dest": "src/main.py"
       }
     ],
-    "env": {
-      "PYTHONPATH": ".",
-      "ENVIRONMENT": "production",
-      "PYTHON_VERSION": "3.9"
-    },
     "git": {
       "deploymentEnabled": {
         "main": true,
