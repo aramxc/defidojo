@@ -1,12 +1,13 @@
 from .. import db
-from ..utils import generate_uuid, TimestampMixin
-
+from ..utils import TimestampMixin
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 
 class User(db.Model, TimestampMixin):
     """Represents a user in the platform."""
     __tablename__ = 'users'
     
-    id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     wallet_address = db.Column(db.String(42), unique=True, nullable=True)

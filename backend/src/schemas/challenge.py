@@ -1,11 +1,11 @@
 from pydantic import BaseModel, Field, validator
 from typing import List, Optional, Dict, Any
 from datetime import datetime
-
+from uuid import UUID
 
 class TagSchema(BaseModel):
     """Schema for challenge tags"""
-    id: Optional[str] = None
+    id: Optional[UUID] = None
     name: str = Field(..., min_length=1, max_length=50)
     color: str = Field(..., pattern=r'^rgb\(\d{1,3},\s*\d{1,3},\s*\d{1,3}\)$')
     background_color: str
@@ -16,8 +16,8 @@ class TagSchema(BaseModel):
 
 class TestCaseSchema(BaseModel):
     """Schema for challenge test cases"""
-    id: Optional[str] = None
-    challenge_id: Optional[str] = None
+    id: Optional[UUID] = None
+    challenge_id: Optional[UUID] = None
     input: str
     expected_output: str
     is_public: bool = True
@@ -69,16 +69,16 @@ class ChallengeUpdate(BaseModel):
 
 class SolutionCreate(BaseModel):
     """Schema for submitting a solution"""
-    challenge_id: str
+    challenge_id: UUID
     code: str = Field(..., min_length=1)
     language: str = Field(..., pattern='^(solidity|javascript|python)$')
 
 
 class SolutionResponse(BaseModel):
     """Schema for solution response"""
-    id: str
-    challenge_id: str
-    user_id: str
+    id: UUID
+    challenge_id: UUID
+    user_id: UUID
     code: str
     language: str
     passed_tests: bool
@@ -92,13 +92,13 @@ class SolutionResponse(BaseModel):
 
 class ChallengeResponse(BaseModel):
     """Schema for challenge response"""
-    id: str
+    id: UUID
     title: str
     difficulty: str
     description: str
     examples: List[Dict[str, Any]]
     constraints: List[str]
-    author_id: str
+    author_id: UUID
     author_name: str
     initial_code: Optional[str]
     tags: List[TagSchema]
@@ -107,7 +107,7 @@ class ChallengeResponse(BaseModel):
     total_votes: int
     is_template: bool
     is_draft: bool
-    parent_template_id: Optional[str]
+    parent_template_id: Optional[UUID]
     created_at: datetime
     updated_at: datetime
 
