@@ -1,6 +1,6 @@
 // In development (Docker or local), this will be http://localhost:8000/api
 // In production (Vercel), this will be the production URL
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL + '/api' || 'http://localhost:8000/api';
 
 export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
   const url = `${API_BASE_URL}/${endpoint}`;
