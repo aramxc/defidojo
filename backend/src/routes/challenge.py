@@ -32,9 +32,8 @@ async def create_challenge():
 
 
 @challenge_routes.route('', methods=['GET', 'OPTIONS'])
-async def get_challenges():
+def get_challenges():
     """Get challenges with optional filters"""
-    # Handle OPTIONS request
     if request.method == 'OPTIONS':
         return '', 204
         
@@ -45,7 +44,7 @@ async def get_challenges():
         page: int = int(request.args.get('page', 1))
         per_page: int = int(request.args.get('per_page', 20))
 
-        result = await ChallengeService.get_challenges(
+        result = ChallengeService.get_challenges(
             difficulty=difficulty,
             tag=tag,
             author_id=author_id,
@@ -65,10 +64,10 @@ async def get_challenges():
 
 
 @challenge_routes.route('/<challenge_id>', methods=['GET'])
-async def get_challenge(challenge_id: str):
+def get_challenge(challenge_id: str):
     """Get a specific challenge"""
     try:
-        challenge = await ChallengeService.get_challenge(challenge_id)
+        challenge = ChallengeService.get_challenge(challenge_id)
         return jsonify(ChallengeResponse.from_orm(challenge).dict())
     except ValueError as e:
         return jsonify({'error': str(e)}), 404
@@ -77,18 +76,18 @@ async def get_challenge(challenge_id: str):
 @challenge_routes.route('/<challenge_id>', methods=['PUT'])
 @require_auth
 @validate_request(ChallengeUpdate)
-async def update_challenge(challenge_id: str):
+def update_challenge(challenge_id: str):
     """Update a challenge"""
     try:
         data = request.get_json()
         user = request.current_user
         
         # Verify ownership
-        challenge = await ChallengeService.get_challenge(challenge_id)
+        challenge = ChallengeService.get_challenge(challenge_id)
         if challenge.author_id != user.id:
             return jsonify({'error': 'Unauthorized'}), 403
             
-        updated_challenge = await ChallengeService.update_challenge(
+        updated_challenge = ChallengeService.update_challenge(
             challenge_id=challenge_id,
             data=data
         )
@@ -137,10 +136,10 @@ async def vote_challenge(challenge_id: str):
 
 
 @challenge_routes.route('/tags', methods=['GET'])
-async def get_tags():
+def get_tags():
     """Get all available tags"""
     try:
-        tags = await ChallengeService.get_tags()
+        tags = ChallengeService.get_tags()
         return jsonify([tag.to_dict() for tag in tags])
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
