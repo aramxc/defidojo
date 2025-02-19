@@ -21,6 +21,9 @@ describe('Landing Page Tests', () => {
     // Use setTimeout to allow for any asynchronous title updates
     await new Promise((resolve) => setTimeout(resolve, 0));
     
-    expect(document.title).toBe('DeFi Dojo - Coding Challenges');
+   
+    // Look for the title element directly
+    const titleElement = document.querySelector('title');
+    expect(titleElement).toBe('DeFi Dojo - Coding Challenges');
   });
 });
