@@ -118,15 +118,14 @@ services:
     command: >
       sh -c "
         pip install -r requirements.txt &&
-        if [ -d migrations ]; then
-          echo 'Migrations directory exists, running upgrade...' &&
-          flask db upgrade
-        else
-          echo 'Initializing new migrations...' &&
-          flask db init &&
-          flask db migrate -m 'initial migration' &&
-          flask db upgrade
-        fi"
+        echo 'Dropping all tables...' &&
+        python -c 'from src.models import db; from src.main import create_app; app = create_app(); app.app_context().push(); db.drop_all()' &&
+        echo 'Removing migrations folder...' &&
+        rm -rf migrations &&
+        echo 'Initializing new migrations...' &&
+        flask db init &&
+        flask db migrate -m 'initial migration' &&
+        flask db upgrade"
 
   seed:
     build:
