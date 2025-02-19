@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import UUID
 from ..models import db, Challenge, Solution, Tag, challenge_tags
 from ..schemas.challenge import ChallengeCreate, ChallengeUpdate, SolutionCreate
 from sqlalchemy.exc import IntegrityError
@@ -47,7 +48,7 @@ class ChallengeService:
             raise ValueError("Challenge creation failed")
 
     @staticmethod
-    async def get_challenge(challenge_id: str) -> Optional[Challenge]:
+    async def get_challenge(challenge_id: UUID) -> Optional[Challenge]:
         """Get a challenge by ID"""
         return Challenge.query.get_or_404(challenge_id)
 
@@ -112,7 +113,7 @@ class ChallengeService:
         }
 
     @staticmethod
-    async def update_challenge(challenge_id: str, data: ChallengeUpdate) -> Challenge:
+    async def update_challenge(challenge_id: UUID, data: ChallengeUpdate) -> Challenge:
         """Update a challenge"""
         challenge = await ChallengeService.get_challenge(challenge_id)
         
@@ -139,7 +140,7 @@ class ChallengeService:
             raise ValueError("Challenge update failed")
 
     @staticmethod
-    async def submit_solution(data: SolutionCreate, user_id: str) -> Solution:
+    async def submit_solution(data: SolutionCreate, user_id: UUID) -> Solution:
         """Submit a solution to a challenge"""
         # Verify challenge exists
         challenge = await ChallengeService.get_challenge(data.challenge_id)
@@ -162,7 +163,7 @@ class ChallengeService:
             raise ValueError("Solution submission failed")
 
     @staticmethod
-    async def vote_challenge(challenge_id: str, vote_type: str) -> Challenge:
+    async def vote_challenge(challenge_id: UUID, vote_type: str) -> Challenge:
         """Update challenge vote count"""
         challenge = await ChallengeService.get_challenge(challenge_id)
         

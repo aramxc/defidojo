@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import UUID
 from src.models import db, User
 from src.schemas.user import UserCreate, UserUpdate
 from sqlalchemy.exc import IntegrityError
@@ -23,7 +24,7 @@ class UserService:
             raise ValueError("Username or email already exists")
 
     @staticmethod
-    async def get_user(user_id: str) -> Optional[User]:
+    async def get_user(user_id: UUID) -> Optional[User]:
         """Get a user by ID"""
         return User.query.get_or_404(user_id)
 
@@ -33,7 +34,7 @@ class UserService:
         return User.query.filter_by(email=email).first()
 
     @staticmethod
-    async def update_user(user_id: str, data: UserUpdate) -> User:
+    async def update_user(user_id: UUID, data: UserUpdate) -> User:
         """Update a user's profile"""
         user = await UserService.get_user(user_id)
         
@@ -49,13 +50,13 @@ class UserService:
             raise ValueError("Username or email already exists")
 
     @staticmethod
-    async def get_user_challenges(user_id: str, page: int = 1, per_page: int = 20):
+    async def get_user_challenges(user_id: UUID, page: int = 1, per_page: int = 20):
         """Get challenges created by a user"""
         user = await UserService.get_user(user_id)
         return user.challenges.paginate(page=page, per_page=per_page)
 
     @staticmethod
-    async def get_user_solutions(user_id: str, page: int = 1, per_page: int = 20):
+    async def get_user_solutions(user_id: UUID, page: int = 1, per_page: int = 20):
         """Get solutions submitted by a user"""
         user = await UserService.get_user(user_id)
         return user.solutions.paginate(page=page, per_page=per_page)
