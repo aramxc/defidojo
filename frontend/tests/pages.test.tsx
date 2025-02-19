@@ -1,15 +1,10 @@
 import { render } from '@testing-library/react';
 import LandingPage from '@/app/page';
 import { ThemeProvider } from '@/contexts/ThemeContext';
-import { describe, test, expect, beforeEach } from '@jest/globals';
+import { describe, test, expect } from '@jest/globals';
 
 
 describe('Landing Page Tests', () => {
-  beforeEach(() => {
-    // Reset the document title before each test
-    document.title = '';
-  });
-  
   test('Landing page renders with title', async () => {
     // Create a mock head element if it doesn't exist
     if (!document.head) {
