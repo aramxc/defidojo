@@ -6,15 +6,6 @@ from .user import user_routes
 # Create a main api Blueprint with url prefix /api
 api = Blueprint('api', __name__, url_prefix='/api')
 
-# Enable CORS for all routes
-CORS(api, resources={
-    r"/api/*": {
-        "origins": ["http://localhost:3000", "https://defidojo.vercel.app"],
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"]
-    }
-})
-
 
 # Add health check and index routes to the main api Blueprint
 @api.route('/health')
