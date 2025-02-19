@@ -5,17 +5,21 @@ services:
       target: development
     volumes:
       - ./frontend:/app
-      - /app/node_modules
       - next-cache:/app/.next
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
       - WATCHPACK_POLLING=true
       - NEXT_TELEMETRY_DISABLED=1
       - FORCE_PRECOMPILE=true
+      - BROWSER=true
+      - NODE_VERSION=22
     command: >
-      sh -c "npm run dev -- -H 0.0.0.0"
+      sh -c "
+        npm install &&
+        echo 'Starting Next.js development server...' &&
+        npm run dev -- -H 0.0.0.0"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s
@@ -24,6 +28,15 @@ services:
       start_period: 20s
     stdin_open: true
     tty: true
+    depends_on:
+      backend:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
 
   backend:
     build:
@@ -42,9 +55,7 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_HOST=postgres
       - DB_PORT=${DB_PORT}
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME}
-      - CORS_ORIGINS=http://localhost:3000
-      - CORS_ALLOW_CREDENTIALS=true
+      - ENVIRONMENT=development
     command: python src/main.py
     depends_on:
       postgres:
@@ -99,13 +110,14 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_HOST=postgres
       - DB_PORT=${DB_PORT}
-      - FLASK_APP=src.main:create_app('development')
-      - FLASK_ENV=development
+      - ENVIRONMENT=development
+      - FLASK_APP=src.main:create_app
     depends_on:
       postgres:
         condition: service_healthy
     command: >
       sh -c "
+        pip install -r requirements.txt &&
         if [ -d migrations ]; then
           echo 'Migrations directory exists, running upgrade...' &&
           flask db upgrade

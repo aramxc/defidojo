@@ -43,7 +43,7 @@ export const themes: Record<string, Theme> = {
       text: {
         primary: '#F8FAFC',
         secondary: '#E2E8F0',
-        accent: '#94A3B8',
+        accent: '#9CA3AF',
         dark: '#0EA5E9',
       },
       border: {
@@ -73,7 +73,7 @@ export const themes: Record<string, Theme> = {
       text: {
         primary: '#F8FAFC',
         secondary: '#E2E8F0',
-        accent: '#DBA88C',
+        accent: '#9CA3AF',
         dark: '#FF3B1D',
       },
       border: {
@@ -103,7 +103,7 @@ export const themes: Record<string, Theme> = {
       text: {
         primary: '#E2E8F0',
         secondary: '#CBD5E1',
-        accent: '#94A3B8',
+        accent: '#9CA3AF',
         dark: '#FF0F7B',
       },
       border: {
@@ -133,7 +133,7 @@ export const themes: Record<string, Theme> = {
       text: {
         primary: '#E2F8F0',
         secondary: '#E2E8F0',
-        accent: '#88E0D0',
+        accent: '#9CA3AF',
         dark: '#4ADE80',
       },
       border: {

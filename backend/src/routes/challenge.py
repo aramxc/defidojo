@@ -7,7 +7,8 @@ from typing import Optional
 from src.utils.auth import require_auth
 from src.utils.validation import validate_request
 
-challenge_routes = Blueprint('challenge', __name__, url_prefix='/challenges')
+# Create blueprint without url_prefix (we'll add it in init_routes)
+challenge_routes = Blueprint('challenges', __name__)
 
 
 @challenge_routes.route('', methods=['POST'])
