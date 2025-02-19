@@ -28,6 +28,9 @@ def get_database_url(environment='development'):
     database_url = os.getenv('DATABASE_URL')
     if database_url:
         logger.info("Using DATABASE_URL from environment variables")
+        # Convert postgres:// to postgresql:// if necessary
+        if database_url.startswith('postgres://'):
+            database_url = database_url.replace('postgres://', 'postgresql://', 1)
         return database_url
             
     # If no DATABASE_URL, construct from components
