@@ -32,7 +32,7 @@ async def create_challenge():
 
 
 @challenge_routes.route('', methods=['GET', 'OPTIONS'])
-def get_challenges():
+async def get_challenges():
     """Get challenges with optional filters"""
     if request.method == 'OPTIONS':
         return '', 204
@@ -44,7 +44,7 @@ def get_challenges():
         page: int = int(request.args.get('page', 1))
         per_page: int = int(request.args.get('per_page', 20))
 
-        result = ChallengeService.get_challenges(
+        result = await ChallengeService.get_challenges(
             difficulty=difficulty,
             tag=tag,
             author_id=author_id,
@@ -64,10 +64,10 @@ def get_challenges():
 
 
 @challenge_routes.route('/<challenge_id>', methods=['GET'])
-def get_challenge(challenge_id: str):
+async def get_challenge(challenge_id: str):
     """Get a specific challenge"""
     try:
-        challenge = ChallengeService.get_challenge(challenge_id)
+        challenge = await ChallengeService.get_challenge(challenge_id)
         return jsonify(ChallengeResponse.from_orm(challenge).dict())
     except ValueError as e:
         return jsonify({'error': str(e)}), 404
