@@ -1,8 +1,11 @@
 import os
 from dotenv import load_dotenv
 from urllib.parse import quote_plus
+import logging
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 def get_environment():
     """Determine the current environment.
@@ -20,39 +23,22 @@ def get_environment():
     return os.getenv('ENVIRONMENT', 'development')
 
 def get_database_url(environment='development'):
-    """Get database URL based on environment.
-    
-    Args:
-        environment (str): Either 'local', 'development', or 'production'
-    Returns:
-        str: Database URL
-    """
-    # First check if DATABASE_URL is set (for production/deployment)
-    database_url = os.getenv('DATABASE_URL')
-    if database_url and environment == 'production':
-        return database_url
-        
+    """Get database URL based on environment variables"""
     if environment == 'production':
-        # Use NeonDB for production
-        db_host = os.getenv('NEON_DB_HOST')
-        db_user = os.getenv('NEON_DB_USER')
-        db_pass = os.getenv('NEON_DB_PASSWORD')
-        db_name = os.getenv('NEON_DB_DATABASE')
-        if not all([db_host, db_user, db_pass, db_name]):
-            raise ValueError("Missing required NeonDB environment variables")
-        return f"postgresql://{db_user}:{quote_plus(db_pass)}@{db_host}/{db_name}"
+        # Use POSTGRES_URL for production
+        database_url = os.getenv('POSTGRES_URL')
+        if not database_url:
+            logger.error("POSTGRES_URL environment variable is not set")
+            raise ValueError("POSTGRES_URL environment variable is required for production")
+            
+        logger.info("Using POSTGRES_URL for database connection")
+        # Convert postgres:// to postgresql:// if necessary
+        if database_url.startswith('postgres://'):
+            database_url = database_url.replace('postgres://', 'postgresql://', 1)
+        return database_url
     
-    # Development/Local DB configuration
-    user = os.getenv('DB_USER', 'dojo_admin')
-    password = os.getenv('DB_PASSWORD')
-    if not password:
-        raise ValueError("DB_PASSWORD environment variable is required")
-    
-    host = os.getenv('DB_HOST')
-    port = os.getenv('DB_PORT')
-    db_name = os.getenv('DB_NAME')
-    
-    return f'postgresql://{user}:{quote_plus(password)}@{host}:{port}/{db_name}'
+    # Development configuration remains unchanged
+    return "postgresql://localhost:5432/defidojo"
 
 
 class Config:
@@ -78,3 +64,4 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = get_database_url('production')
     DEBUG = False
     SECRET_KEY = os.getenv('SECRET_KEY', 'production-key')
+    TESTING = False

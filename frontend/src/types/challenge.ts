@@ -1,11 +1,4 @@
-export interface ChallengeTag {
-    id: string;
-    name: string;
-    color: string; // Hex color or tailwind class name
-    backgroundColor: string; // Hex color or tailwind class name
-  }
-  
-  export interface TestCase {
+export interface TestCase {
     id: string;
     challengeId: string;
     input: string;
@@ -34,6 +27,14 @@ export interface ChallengeTag {
     createdAt: Date;
   }
   
+  export interface Tag {
+    id: string;
+    name: string;
+    color: string;
+    background_color: string;  // Match API response
+    
+  }
+  
   export interface Challenge {
     id: string;
     title: string;
@@ -45,7 +46,7 @@ export interface ChallengeTag {
       explanation?: string;
     }>;
     constraints: string[];
-    initial_code: string | null;
+    initial_code?: string;
     author_id: string;
     author_name: string;
     is_template: boolean;
@@ -56,10 +57,5 @@ export interface ChallengeTag {
     total_votes: number;
     created_at: string;
     updated_at: string;
-    tags?: Array<{
-      id: string;
-      name: string;
-      color: string;
-      backgroundColor: string;
-    }>;
+    tags: Tag[];  // This should match the API response
   }

@@ -1,42 +1,66 @@
-import { Challenge } from "@/types/challenge";
+'use client';
 
-interface ChallengeDescriptionProps {
-  challenge: Challenge;
-}
+import { useChallenge } from '@/contexts/ChallengeContext';
 
-export default function ChallengeDescription({ challenge }: ChallengeDescriptionProps) {
+export default function ChallengeDescription() {
+  const { challenge } = useChallenge();
+
+  if (!challenge) return null;
+
   return (
-    <div className="prose max-w-none">
-      <h2 className="text-xl font-semibold mb-4 text-theme-text-primary">Description</h2>
-      <p className="text-theme-text-secondary whitespace-pre-wrap">
-        {challenge.description}
-      </p>
-      
-      <h3 className="text-lg font-semibold mb-2 mt-6 text-theme-text-primary">Examples:</h3>
-      <div className="space-y-3">
-        {challenge.examples.map((example, index) => (
-          <div key={index} className="bg-theme-bg-accent/50 p-4 rounded-lg">
-            <code className="text-sm text-theme-text-secondary block">
-              Input: {example.input}
-            </code>
-            <code className="text-sm text-theme-text-secondary block">
-              Output: {example.output}
-            </code>
-            {example.explanation && (
-              <p className="text-sm text-theme-text-secondary mt-2 border-t border-theme-bg-accent pt-2">
-                {example.explanation}
-              </p>
-            )}
-          </div>
-        ))}
+    <div className="space-y-8">
+      {/* Description */}
+      <div>
+        <h2 className="text-xl font-semibold text-theme-text-primary mb-2">Description</h2>
+        <p className="text-theme-text-secondary">{challenge.description}</p>
       </div>
-      
-      <h3 className="text-lg font-semibold mb-2 mt-6 text-theme-text-primary">Constraints:</h3>
-      <ul className="list-disc list-inside text-theme-text-secondary space-y-1">
-        {challenge.constraints.map((constraint, index) => (
-          <li key={index}>{constraint}</li>
-        ))}
-      </ul>
+
+      {/* Constraints */}
+      <div>
+        <h3 className="text-lg font-semibold text-theme-text-primary mb-3">Constraints</h3>
+        <ul className="list-none space-y-2">
+          {challenge.constraints.map((constraint, index) => (
+            <li 
+              key={index}
+              className="flex items-start gap-2 text-theme-text-secondary"
+            >
+              <span className="text-theme-text-accent">•</span>
+              <span>{constraint}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Examples */}
+      {challenge.examples && challenge.examples.length > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold text-theme-text-primary mb-3">Examples</h3>
+          <div className="space-y-4">
+            {challenge.examples.map((example, index) => (
+              <div 
+                key={index}
+                className="bg-theme-bg-accent/10 rounded-lg p-4 border border-theme-border-primary"
+              >
+                <div className="space-y-2">
+                  <div className="font-mono text-sm">
+                    <span className="text-theme-text-accent">Input: </span>
+                    <span className="text-theme-text-primary">{example.input}</span>
+                  </div>
+                  <div className="font-mono text-sm">
+                    <span className="text-theme-text-accent">Output: </span>
+                    <span className="text-theme-text-primary">{example.output}</span>
+                  </div>
+                  {example.explanation && (
+                    <div className="text-sm text-theme-text-secondary mt-2 border-t border-theme-border-primary pt-2">
+                      {example.explanation}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

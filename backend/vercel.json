@@ -3,8 +3,7 @@
     "builds": [
       {
         "src": "src/main.py",
-        "use": "@vercel/python",
-        "config": { "maxLambdaSize": "15mb" }
+        "use": "@vercel/python"
       }
     ],
     "routes": [
@@ -13,8 +12,17 @@
         "dest": "src/main.py"
       }
     ],
+    "git": {
+      "deploymentEnabled": {
+        "main": true,
+        "develop": true,
+        "feature/*": false,
+        "fix/*": true
+      }
+    },
     "env": {
-      "PYTHONPATH": "src",
-      "ENVIRONMENT": "production"
+      "PYTHONPATH": ".",
+      "ENVIRONMENT": "production",
+      "PYTHON_VERSION": "3.9"
     }
   }

@@ -5,6 +5,7 @@ export interface Message {
     role: 'user' | 'assistant';
     content: string;
     status: 'thinking' | 'typing' | 'complete';
+    presenceData?: string;
 }
 
 export interface ChatContext {
@@ -57,6 +58,14 @@ export const useNebula = (): UseNebulaReturn => {
                 },
                 (presenceData: string) => {
                     console.log('Presence update:', presenceData);
+                    setMessages(prev => {
+                        const newMessages = [...prev];
+                        const lastMessage = newMessages[newMessages.length - 1];
+                        if (lastMessage?.role === 'assistant') {
+                            lastMessage.presenceData = presenceData;
+                        }
+                        return newMessages;
+                    });
                 },
                 () => {
                     setMessages(prev => prev.map(msg => 
