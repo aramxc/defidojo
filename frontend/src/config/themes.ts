@@ -8,7 +8,7 @@ export const themes: Record<string, Theme> = {
         primary: '#111827',
         secondary: '#1F2937',
         accent: '#2D3F2B',
-        image: '/assets/dojobgforest.png',
+        image: '/assets/bgs/dojobgforest.png',
       },
       text: {
         primary: '#FFFFFF',
@@ -38,7 +38,7 @@ export const themes: Record<string, Theme> = {
         primary: '#0B1C34',
         secondary: '#1E293B',
         accent: '#334155',
-        image: '/assets/dojobgocean.png',
+        image: '/assets/bgs/dojobgocean.png',
       },
       text: {
         primary: '#F8FAFC',
@@ -68,7 +68,7 @@ export const themes: Record<string, Theme> = {
         primary: '#1F1A17',
         secondary: '#2B1D1D',
         accent: '#3D2523',
-        image: '/assets/dojobgsunset.png',
+        image: '/assets/bgs/dojobgsunset.png',
       },
       text: {
         primary: '#F8FAFC',
@@ -98,7 +98,7 @@ export const themes: Record<string, Theme> = {
         primary: '#0D0B1E',
         secondary: '#1A1B3C',
         accent: '#2A2C52',
-        image: '/assets/dojobgcyberpunk.png',
+        image: '/assets/bgs/dojobgcyberpunk.png',
       },
       text: {
         primary: '#E2E8F0',
@@ -128,7 +128,7 @@ export const themes: Record<string, Theme> = {
         primary: '#0F172A',
         secondary: '#1E293B',
         accent: '#2D4F4B',
-        image: '/assets/dojobgaurora.png',
+        image: '/assets/bgs/dojobgaurora.png',
       },
       text: {
         primary: '#E2F8F0',

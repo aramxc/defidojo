@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useChallenge } from '@/hooks/useChallenge';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Challenge } from '@/types/challenge';
 import { Rock_Salt } from 'next/font/google';
 import TagBadge from '@/components/shared/TagBadge';
