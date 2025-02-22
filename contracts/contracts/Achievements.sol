@@ -3,10 +3,17 @@ pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+// Github Author: @aramxc
 // This is the original achievement contract to be used for the Dojo Achievements NFTs
 contract DojoAchievementNFT is ERC721URIStorage, Ownable {
+    using ECDSA for bytes32;
+    
+    // Mapping to track used signatures
+    mapping(bytes => bool) public usedSignatures;
+    
     // Enum to define different achievement types
     enum AchievementType { 
         DOJO_MASTER, 
@@ -82,6 +89,10 @@ contract DojoAchievementNFT is ERC721URIStorage, Ownable {
         address player, 
         AchievementType achievementType
     ) public view returns (bool) {
+        // Default to false if achievement type doesn't exist
+        if (achievements[achievementType].maxAchievements == 0) {
+            return false;
+        }
         return achievements[achievementType].hasAchievement[player];
     }
 

@@ -1,6 +1,11 @@
 import { ethers } from "hardhat";
 
 async function main() {
+  // Ensure the network is running and accessible
+  const [deployer] = await ethers.getSigners();
+  console.log("Deploying contracts with account:", await deployer.getAddress());
+  console.log("Account balance:", (await deployer.provider.getBalance(deployer.address)).toString());
+
   const DojoAchievementNFT = await ethers.getContractFactory("DojoAchievementNFT");
   const dojoAchievementNFT = await DojoAchievementNFT.deploy();
 
@@ -10,6 +15,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(error);
+  console.error("Error deploying contract:", error);
   process.exitCode = 1;
 });

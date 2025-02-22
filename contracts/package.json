@@ -6,8 +6,12 @@
   "scripts": {
     "test": "hardhat test",
     "compile": "hardhat compile",
+    "node": "hardhat node",
     "deploy:local": "hardhat run scripts/deploy.ts",
     "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
+    "deploy:amoy": "hardhat run scripts/deploy.ts --network amoy",
+    "verify:sepolia": "hardhat verify --network sepolia",
+    "verify:amoy": "hardhat verify --network amoy",
     "postdeploy": "ts-node scripts/copy-artifacts.ts"
   },
   "keywords": [],

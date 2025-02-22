@@ -1,34 +1,41 @@
 import { useCallback } from 'react';
 import { ContractService, AchievementType } from '@/web3/services/contractService';
 import { useWallet } from '@/web3/contexts/WalletContext';
+import { useQuery } from '@tanstack/react-query';
 
 export function useAchievement() {
   const { address, walletClient, chainId, isConnected } = useWallet();
 
-  const checkAchievement = useCallback(async (type: AchievementType) => {
-    if (!address || !chainId) throw new Error('Wallet not connected');
-    return ContractService.checkAchievement(address, type, chainId);
-  }, [address, chainId]);
+  // Use React Query to cache the results and prevent unnecessary calls
+  const { data: achievements = [], isLoading } = useQuery({
+    queryKey: ['achievements', address, chainId],
+    queryFn: async () => {
+      if (!address || !chainId) return [];
+      
+      const types = Object.values(AchievementType).filter(
+        (value): value is AchievementType => typeof value === 'number'
+      );
 
-  const getAllAchievements = useCallback(async () => {
-    if (!address || !chainId) throw new Error('Wallet not connected');
-    
-    // Get all achievement types
-    const types = Object.values(AchievementType).filter(
-      (value): value is AchievementType => typeof value === 'number'
-    );
+      const results = await Promise.allSettled(
+        types.map(async (type) => {
+          try {
+            const hasAchievement = await ContractService.checkAchievement(address, type, chainId);
+            return hasAchievement ? type : null;
+          } catch (error) {
+            console.warn(`Error checking achievement type ${type}:`, error);
+            return null;
+          }
+        })
+      );
 
-    // Check each achievement type
-    const results = await Promise.all(
-      types.map(async (type) => {
-        const hasAchievement = await ContractService.checkAchievement(address, type, chainId);
-        return hasAchievement ? type : null;
-      })
-    );
-
-    // Filter out null values and return owned achievements
-    return results.filter((type): type is AchievementType => type !== null);
-  }, [address, chainId]);
+      return results
+        .filter((result): result is PromiseFulfilledResult<AchievementType | null> => 
+          result.status === 'fulfilled')
+        .map(result => result.value)
+        .filter((type): type is AchievementType => type !== null);
+    },
+    enabled: Boolean(address && chainId),
+  });
 
   const mintAchievement = useCallback(async (type: AchievementType) => {
     if (!walletClient || !address || !chainId) {
@@ -45,8 +52,8 @@ export function useAchievement() {
   }, [walletClient, address, chainId]);
 
   return { 
-    checkAchievement, 
-    getAllAchievements,
+    achievements,
+    isLoading,
     mintAchievement,
     isWalletConnected: isConnected,
     address 

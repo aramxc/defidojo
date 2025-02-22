@@ -11,10 +11,10 @@ const CONTRACT_ADDRESS = {
 
 export enum AchievementType {
   DOJO_MASTER,
-  SOLIDITY_SENSEI,
-  QUICK_REFLEXES,
-  COMMUNITY_CONTRIBUTOR,
-  NOT_SO_RUSTY
+  // SOLIDITY_SENSEI,
+  // QUICK_REFLEXES,
+  // COMMUNITY_CONTRIBUTOR,
+  // NOT_SO_RUSTY
 }
 
 // Public client for read operations
@@ -40,7 +40,7 @@ export const ContractService = {
       });
       return hasAchievement;
     } catch (error) {
-      console.error('Error checking achievement:', error);
+      console.log('No achievements found for address:', walletAddress, error);
       return false;
     }
   },

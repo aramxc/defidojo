@@ -60,8 +60,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      hardhat:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
       interval: 30s
@@ -158,9 +156,15 @@ services:
         npx hardhat compile &&
         npx ts-node scripts/copy-artifacts.ts &&
         npx hardhat node &
-        sleep 10 &&
+        # Wait for Hardhat node to be ready
+        while ! curl -s -o /dev/null http://localhost:8545; do
+          echo 'Waiting for Hardhat node to start...'
+          sleep 2
+        done &&
+        echo 'Hardhat node is ready. Deploying contracts...' &&
         npx hardhat run scripts/deploy.ts --network localhost &&
-        while true; do sleep 1; done"
+        # Keep container running
+        tail -f /dev/null"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8545"]
       interval: 30s
