@@ -37,7 +37,8 @@ export default function ThemeSelector() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-40 py-2 rounded-lg bg-theme-panel-bg border border-theme-panel-border shadow-lg">
+        <div className="absolute left-0 md:left-auto md:right-0 top-0 md:top-full ml-12 md:ml-0 md:mt-2 
+                       w-40 py-2 rounded-lg bg-theme-panel-bg border border-theme-panel-border shadow-lg">
           {Object.entries(themes).map(([key, value]) => (
             <button
               key={key}

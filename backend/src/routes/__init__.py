@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 from flask_cors import CORS
 from .challenge import challenge_routes
 from .user import user_routes
+from .dojo_token import dojo_token_routes
 
 # Create a main api Blueprint with url prefix /api
 api = Blueprint('api', __name__, url_prefix='/api')
@@ -29,9 +30,10 @@ def index():
 
 def init_routes(app):
     """Initialize all routes with the app"""
-    # First register child blueprints with the app
+    # Register child blueprints
     app.register_blueprint(challenge_routes, url_prefix='/api/challenges')
     app.register_blueprint(user_routes, url_prefix='/api/users')
+    app.register_blueprint(dojo_token_routes, url_prefix='/api/dojo-token')
     
-    # Then register the main api Blueprint with the app
+    # Register main api Blueprint
     app.register_blueprint(api)
