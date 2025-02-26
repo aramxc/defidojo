@@ -137,7 +137,7 @@ export const themes: Record<string, Theme> = {
         dark: '#4ADE80',
       },
       border: {
-        primary: 'rgba(74, 222, 128, 0.4)',
+        primary: 'rgba(51, 65, 85, 0.7)',
         secondary: 'rgba(74, 222, 128, 0.2)',
       },
       panel: {

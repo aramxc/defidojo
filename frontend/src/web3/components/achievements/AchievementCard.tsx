@@ -15,7 +15,7 @@ export function AchievementCard({ achievement, onClick }: AchievementCardProps) 
       className="relative group cursor-pointer overflow-hidden rounded-xl 
                  border border-white/10 backdrop-blur-sm
                  hover:border-white/20 transition-all duration-300
-                 w-full h-[300px] max-w-[300px]"
+                 h-[300px] w-[200px]"
     >
       <div className="absolute inset-0 z-50 flex items-center justify-center">
         <div className="w-full h-full relative">
@@ -23,7 +23,7 @@ export function AchievementCard({ achievement, onClick }: AchievementCardProps) 
             src={ACHIEVEMENT_IMAGE_PATH[achievement]}
             alt={ACHIEVEMENT_TITLES[achievement]}
             fill
-            sizes="(max-width: 768px) 100vw, 500px"
+            sizes="(max-width: 768px) w-full, 500px"
             className="object-contain transform group-hover:scale-105 transition-transform duration-300"
             priority
           />

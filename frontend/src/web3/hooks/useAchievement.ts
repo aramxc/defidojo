@@ -4,10 +4,10 @@ import { useWallet } from '@/web3/contexts/WalletContext';
 import { useQuery } from '@tanstack/react-query';
 
 export function useAchievement() {
-  const { address, walletClient, chainId, isConnected } = useWallet();
+  const { address, isConnected, chainId, walletClient } = useWallet();
 
   // Use React Query to cache the results and prevent unnecessary calls
-  const { data: achievements = [], isLoading } = useQuery({
+  const { data: achievements = [], isLoading, refetch } = useQuery({
     queryKey: ['achievements', address, chainId],
     queryFn: async () => {
       if (!address || !chainId) return [];
@@ -38,24 +38,30 @@ export function useAchievement() {
   });
 
   const mintAchievement = useCallback(async (type: AchievementType) => {
-    if (!walletClient || !address || !chainId) {
-      throw new Error('Wallet not connected');
+    if (!isConnected || !address || !chainId || !walletClient) {
+      throw new Error('Please connect your wallet first');
     }
     
     const tokenURI = `https://example.com/metadata/${type}`; // placeholder URI
-    return ContractService.mintAchievement(
+    const hash = await ContractService.mintAchievement(
       address,
-      type, 
+      type,
       tokenURI,
-      walletClient,
+      walletClient
     );
-  }, [walletClient, address, chainId]);
+    
+    // Add a small delay to allow the blockchain to update
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    await refetch();
+    
+    return hash;
+  }, [isConnected, address, chainId, walletClient, refetch]);
 
   return { 
     achievements,
     isLoading,
     mintAchievement,
-    isWalletConnected: isConnected,
+    isConnected,
     address 
   };
 }
