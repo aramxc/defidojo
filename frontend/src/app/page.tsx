@@ -22,7 +22,7 @@ export default function LandingPage() {
         exit={{ opacity: 0 }}
       >
         <div className="relative h-full">
-          <BackgroundImage overrideImage="/assets/dojobg.png" />
+          <BackgroundImage overrideImage="/assets/bgs/dojobg.png" />
           <div className="absolute inset-0 flex items-end justify-center pb-32">
             <EnterButton />
           </div>

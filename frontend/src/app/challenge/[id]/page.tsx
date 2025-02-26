@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import CodeEditor from '@/components/editor/CodeEditor';
 import ChallengeDescription from '@/components/challenge/ChallengeDescription';
 import TestResults from '@/components/challenge/TestResults';
